@@ -1,16 +1,14 @@
 import 'dart:async';
 
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
-import 'package:control_de_calidad/core/constants/Providerids.dart';
-import 'package:control_de_calidad/core/constants/botonguardaractualizado.dart';
+import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
+import 'package:control_de_calidad/core/widgets/botonguardaractualizado.dart';
 import 'package:control_de_calidad/core/constants/catalogodropdowns.dart';
 import 'package:control_de_calidad/core/widgets/BotonSimple.dart';
 import 'package:control_de_calidad/core/widgets/boton_agregar.dart';
 import 'package:control_de_calidad/core/widgets/boxformularios.dart';
 import 'package:control_de_calidad/core/widgets/checkboxformulario.dart';
 import 'package:control_de_calidad/core/widgets/dropdownformulario.dart';
-import 'package:control_de_calidad/core/widgets/graficadecontrolgenerico.dart';
-import 'package:control_de_calidad/core/widgets/histogramaGenerico.dart';
 import 'package:control_de_calidad/core/widgets/textsimpleform.dart';
 import 'package:control_de_calidad/core/widgets/titulos.dart';
 import 'package:control_de_calidad/core/widgets/ventanaflotanteAPI.dart';
@@ -32,8 +30,6 @@ class _ScreenListDatosMPIPSState extends State<ScreenListDatosMPIPS> {
   Widget build(BuildContext context) {
     final provider = Provider.of<ProviderI6>(context, listen: false);
     final providerregistro = Provider.of<IdsProvider>(context, listen: false);
-    final AM = MediaQuery.of(context).size.height;
-    final url = Config();
     final String urlOV = "${Config().baseUrl}/ObtenerValor";
     const Map<String, dynamic> bodyPostBase = {
       "table": "prd_parte_det_mp",
@@ -328,34 +324,6 @@ class _ScreenListDatosMPIPSState extends State<ScreenListDatosMPIPS> {
                       },
                     );
                   },
-                ),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  height: AM * 0.7,
-                  child: HistogramaSlider(
-                    Titulo: 'Humedad ',
-                    NombreTabla: 'pesoips',
-                    apiUrl: '${url.baseUrl}/histograma',
-                    NombreVariable: 'PesoTara',
-                    filtroProducto: 'CRISTAL EC30',
-                    filtroGramaje: '46.6 M5 R',
-                    colorColumnas: [Colors.yellow[900]!, Colors.redAccent],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  height: AM * 0.48,
-                  child: GraficoControlGenerico(
-                    Titulo: 'Pesotara',
-                    NombreTabla: 'pesoips',
-                    apiUrl: '${url.baseUrl}/graficoControl',
-                    NombreVariable: 'PesoTara',
-                    filtroProducto: 'CRISTAL EC30',
-                    filtroGramaje: '46.6 M5 R',
-                    TipoDeGrafica: 1,
-                    //tamanioSubgrupo: 3,
-                    colorLinea: Colors.yellow[900]!,
-                  ),
                 ),
               ],
             ),

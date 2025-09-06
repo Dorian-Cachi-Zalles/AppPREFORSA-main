@@ -1,5 +1,5 @@
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
-import 'package:control_de_calidad/core/constants/Providerids.dart';
+import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/core/widgets/settings_page.dart';
 import 'package:control_de_calidad/modules/ControlObservados/screens/GenericoSelector%20copy.dart';
 import 'package:control_de_calidad/modules/ControlObservados/screens/ScreenGenericoObservados.dart';

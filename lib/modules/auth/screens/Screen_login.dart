@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:control_de_calidad/core/constants/AuthProvider.dart';
+import 'package:control_de_calidad/modules/auth/providers/AuthProvider.dart';
+import 'package:control_de_calidad/core/constants/Configuraciones.dart';
 import 'package:control_de_calidad/modules/auth/screens/home_screen.dart';
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final url = Config();
 
   bool loading = false;
   String? turnoSeleccionado;
@@ -47,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final providerI6 = Provider.of<ProviderI6>(context, listen: false);
 
       final response = await http.post(
-        Uri.parse("http://localhost:8000/api/login"),
+        Uri.parse("${url.baseUrl}/login"),
         headers: {"Content-Type": "application/json"},
         body: json.encode({"email": email, "password": password}),
       );
@@ -55,25 +57,31 @@ class _LoginScreenState extends State<LoginScreen> {
       final data = json.decode(response.body);
 
       if (response.statusCode == 200 && data["success"] == true) {
-        // 🔹 Obtener el modelo actual desde el provider
+        // 🔹 Login exitoso
         final datosIPS = providerI6.RepoDatosPrincipales.items[0];
 
-        // 🔹 Crear copia actualizada con usuario y turno
         final actualizado = datosIPS.copyWith(
           cod_usuario: data['user']['id'],
-          turnoCalidad: turnoSeleccionado, // ← viene del dropdown
+          turnoCalidad: turnoSeleccionado,
         );
+        print('el id es ojooooooo ${data['user']['id']}');
 
         providerI6.updateDatosPrincipales(1, actualizado);
 
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-// Después de login exitoso
-        await authProvider.iniciarSesion();
+        await authProvider.iniciarSesion(nombreUsuario: data['user']['name']);
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } else {
+        // 🔹 Credenciales incorrectas
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Error: usuario o contraseña incorrectos"),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } catch (e) {
@@ -83,6 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.red,
         ),
       );
+      print(e);
     }
 
     setState(() => loading = false);
@@ -137,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       children: [
                         const Text(
-                          "Ingresa tus datos para continuar (mismos que el ARISOF)",
+                          "Ingresa tu usuario y contraseña (mismos que el ARISOF) asi tambien el turno",
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.black,
@@ -165,6 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           style: const TextStyle(color: Colors.black),
                         ),
+                        const SizedBox(height: 15),
                         DropdownButtonFormField<String>(
                           value: turnoSeleccionado,
                           items: turnos.map((String turno) {

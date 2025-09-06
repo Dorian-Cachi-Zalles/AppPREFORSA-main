@@ -1,7 +1,6 @@
-import 'package:control_de_calidad/core/constants/Providerids.dart';
+import 'package:control_de_calidad/core/widgets/custom_drawer.dart';
 import 'package:control_de_calidad/core/constants/catalogodropdowns.dart';
 import 'package:control_de_calidad/core/widgets/settings_page.dart';
-import 'package:control_de_calidad/modules/auth/screens/home_screen.dart';
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
 import 'package:control_de_calidad/modules/linea_I6/screens/screen_ctrl_MP.dart';
 import 'package:control_de_calidad/modules/linea_I6/screens/screen_ctrl_pesos.dart';
@@ -83,7 +82,6 @@ class _ScreenPreformasIPSState extends State<ScreenPreformasIPS> {
 
   @override
   Widget build(BuildContext context) {
-    final providerIds = Provider.of<IdsProvider>(context);
     final settingsModel = Provider.of<SettingsModel>(context);
     final catalogosProvider = Provider.of<CatalogosProvider>(context);
     final Map<String, List<dynamic>> dropOptionsDatosDEFIPS =
@@ -163,145 +161,9 @@ class _ScreenPreformasIPSState extends State<ScreenPreformasIPS> {
               ],
             ),
           ),
-          drawer: Container(
-            color: Colors.black54,
-            child: SafeArea(
-              child: ListTileTheme(
-                textColor: Colors.white,
-                iconColor: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 200,
-                        height: 200,
-                        margin: const EdgeInsets.only(top: 24.0, bottom: 32.0),
-                        clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(
-                          color: Colors.black87,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.abc, size: 80),
-                      ),
-                      // Agregamos un SingleChildScrollView para evitar problemas de scroll
-                      Expanded(
-                        child: Column(
-                          children: [
-                            ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const HomeScreen()),
-                                );
-                              },
-                              leading: const Icon(Icons.sports_handball),
-                              title: Text('INICIO'),
-                            ),
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: providerIds.idsRegistrosList.length,
-                                itemBuilder: (context, index) {
-                                  final registro =
-                                      providerIds.idsRegistrosList[index];
-                                  final List<Map<String, dynamic>> menu = [
-                                    {
-                                      'title': 'I6',
-                                      'screen': const ScreenPreformasIPS(),
-                                      'estado': null
-                                    },
-                                    {
-                                      'title': 'I9',
-                                      'screen': null,
-                                      'estado': null
-                                    },
-                                    {
-                                      'title': 'COLORACAP',
-                                      // 'screen': ScreenPreformasI9(),
-                                      'estado': null
-                                    },
-                                    {
-                                      'title': 'CCM',
-                                      'screen': null,
-                                      'estado': null
-                                    },
-                                    {
-                                      'title': 'SOPLADO',
-                                      'screen': null,
-                                      'estado': null
-                                    },
-                                    {
-                                      'title': 'I5',
-                                      'screen': null,
-                                      'estado': null
-                                    },
-                                    {
-                                      'title': 'IT 2 HX-258',
-                                      'screen': null,
-                                      'estado': null
-                                    },
-                                    {
-                                      'title': 'YUTZUMI',
-                                      'screen': null,
-                                      'estado': null
-                                    },
-                                  ];
-                                  if (registro.estado!) {
-                                    menu[index]['estado'] = true;
-                                  } else {
-                                    menu[index]['estado'] = false;
-                                  }
-                                  // Filtramos los elementos cuya propiedad 'estado' es true
-                                  final visibleMenuItems = menu
-                                      .where((item) => item['estado'] == true)
-                                      .toList();
-
-                                  // Si no hay elementos visibles, no generamos la lista para ese registro
-                                  if (visibleMenuItems.isEmpty) {
-                                    return const SizedBox(); // Retorna un SizedBox vacío si no hay elementos visibles
-                                  }
-
-                                  // Generamos los ListTile solo para los registros visibles
-                                  return Column(
-                                    children: visibleMenuItems.map((item) {
-                                      return ListTile(
-                                        onTap: item['screen'] != null
-                                            ? () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          item['screen']),
-                                                );
-                                              }
-                                            : null, // Si no hay pantalla asociada, no hace nada
-                                        leading:
-                                            const Icon(Icons.sports_handball),
-                                        title: Text(item['title']),
-                                      );
-                                    }).toList(),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16.0),
-                      DefaultTextStyle(
-                        style: const TextStyle(
-                            fontSize: 12, color: Colors.white54),
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 16.0),
-                          child: const Text('Desarrollado por "  "'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+          drawer: const CustomDrawer(
+            lineaActual: 'I6',
+            MostrarInicio: true,
           ),
           body: PersistentTabView(
             context,

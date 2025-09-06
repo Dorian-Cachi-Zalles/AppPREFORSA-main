@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
-import 'package:control_de_calidad/core/constants/Providerids.dart';
-import 'package:control_de_calidad/core/constants/botonguardarInicial.dart';
+import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
+import 'package:control_de_calidad/core/widgets/botonguardarInicial.dart';
 import 'package:control_de_calidad/core/constants/catalogodropdowns.dart';
 import 'package:control_de_calidad/core/widgets/BotonSimple.dart';
 import 'package:control_de_calidad/core/widgets/checkboxformulario.dart';
@@ -26,6 +26,22 @@ class ScreenDatosprincipalesi6 extends StatefulWidget {
 class _ScreenDatosprincipalesi6State extends State<ScreenDatosprincipalesi6> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool _yaValido = false; // 👈 bandera para que solo se ejecute una vez
+
+  @override
+  void initState() {
+    super.initState();
+    final provider = Provider.of<ProviderI6>(context, listen: false);
+    final idsProvider = Provider.of<IdsProvider>(context, listen: false);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final double? saldo = await provider.Saldos(idsProvider);
+      print('EL SALDOOOO ES  $saldo');
+
+      _formKey.currentState?.patchValue({
+        'saldoAcontinuar': saldo?.toString(),
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,10 +208,9 @@ class _ScreenDatosprincipalesi6State extends State<ScreenDatosprincipalesi6> {
             isNumeric: true,
             valorInicial: datos.paFinal == 0 ? '' : datos.paFinal.toString(),
           ),
-          CustomInputFieldMM(
+          const CustomInputFieldMM(
             name: 'saldoAcontinuar',
             label: 'Saldo a Continuar',
-            valorInicial: datos.cod_parte.toString(),
           ),
           CustomInputField(
             name: 'controladas',

@@ -6,6 +6,7 @@ class ModeloPesos {
   final String hora;
   final int cod_producto;
   final bool conformidad;
+  final double peso_total_contraste;
   final String? observaciones;
   final bool isConcatenado;
   final String? pa;
@@ -17,6 +18,7 @@ class ModeloPesos {
       required this.cod_dpcalidad,
       required this.hora,
       required this.cod_producto,
+      required this.peso_total_contraste,
       required this.conformidad,
       required this.isConcatenado,
       this.pa,
@@ -30,6 +32,7 @@ class ModeloPesos {
         cod_dpcalidad: map['cod_dpcalidad'] as int,
         hora: map['hora'] as String,
         cod_producto: map['cod_producto'] as int,
+        peso_total_contraste: map['peso_total_contraste'] as double,
         conformidad: (map['conformidad'] as int) == 1,
         observaciones: map['observaciones'] as String,
         isConcatenado: (map['isConcatenado'] as int) == 1,
@@ -45,6 +48,7 @@ class ModeloPesos {
       cod_dpcalidad: cod_dpcalidad,
       hora: _toString(formValues['hora']),
       cod_producto: cod_producto,
+      peso_total_contraste: _toDouble(formValues['peso_total_contraste']),
       conformidad: (formValues['conformidad'] ?? conformidad),
       observaciones: _toString(formValues['observaciones']).trim(),
       isConcatenado: isConcatenado,
@@ -53,6 +57,12 @@ class ModeloPesos {
   }
 
   static String _toString(dynamic v) => v?.toString() ?? '';
+  static double _toDouble(dynamic v) {
+    if (v is double) return v;
+    if (v is int) return v.toDouble();
+    if (v is String) return double.tryParse(v) ?? 0.0;
+    return 0.0;
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -62,6 +72,7 @@ class ModeloPesos {
       'cod_dpcalidad': cod_dpcalidad,
       'hora': hora,
       'cod_producto': cod_producto,
+      'peso_total_contraste': peso_total_contraste,
       'conformidad': conformidad ? 1 : 0,
       'observaciones': observaciones,
       'isConcatenado': isConcatenado ? 1 : 0,
@@ -76,6 +87,7 @@ class ModeloPesos {
       int? cod_dpcalidad,
       String? hora,
       int? cod_producto,
+      double? peso_total_contraste,
       bool? conformidad,
       String? observaciones,
       bool? isConcatenado,
@@ -87,6 +99,7 @@ class ModeloPesos {
         cod_dpcalidad: cod_dpcalidad ?? this.cod_dpcalidad,
         hora: hora ?? this.hora,
         cod_producto: cod_producto ?? this.cod_producto,
+        peso_total_contraste: peso_total_contraste ?? this.peso_total_contraste,
         conformidad: conformidad ?? this.conformidad,
         observaciones: observaciones ?? this.observaciones,
         isConcatenado: isConcatenado ?? this.isConcatenado,
@@ -100,6 +113,7 @@ extension ModeloPesosApi on ModeloPesos {
       "cod_dpcalidad": cod_dpcalidad,
       "hora": hora,
       "cod_producto": cod_producto,
+      "peso_total_contraste": peso_total_contraste,
       "conformidad": conformidad,
       "observaciones": observaciones
     };

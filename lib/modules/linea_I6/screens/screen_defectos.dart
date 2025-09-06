@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
-import 'package:control_de_calidad/core/constants/Providerids.dart';
-import 'package:control_de_calidad/core/constants/botonguardardoble.dart';
+import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
+import 'package:control_de_calidad/core/widgets/botonguardardoble.dart';
 import 'package:control_de_calidad/core/constants/catalogodropdowns.dart';
 import 'package:control_de_calidad/core/widgets/BotonSimple.dart';
 import 'package:control_de_calidad/core/widgets/boton_agregar.dart';

@@ -1,6 +1,5 @@
-import 'package:control_de_calidad/core/constants/Providerids.dart';
+import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
-import 'package:control_de_calidad/modules/linea_I6/widgets/widget_dropdownVARIABLE.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +15,9 @@ class _ScreenEstadoRegistrosState extends State<ScreenEstadoRegistros> {
   @override
   Widget build(BuildContext context) {
     final providerregistro = Provider.of<IdsProvider>(context);
-    final providerIPS = Provider.of<ProviderI6>(context);
+    final providerIPS = Provider.of<ProviderI6>(
+      context,
+    );
 
     final List<Map<String, dynamic>> LineasDescripcion = [
       {
@@ -219,6 +220,7 @@ class _ScreenEstadoRegistrosState extends State<ScreenEstadoRegistros> {
                                   break;
                                 case 2:
                                   messageId = 60;
+                                  providerIPS.enviarCodParteTest();
                                   break;
                                 case 3:
                                   messageId = 40;
@@ -267,9 +269,8 @@ class _ScreenEstadoRegistrosState extends State<ScreenEstadoRegistros> {
                                         onPressed: () async {
                                           switch (index) {
                                             case 0:
+                                              providerIPS.enviarCodParte();
                                               providerIPS.clearAll();
-                                              await AtributoNCRepoI6.instance
-                                                  .clear();
                                               break;
                                             case 1:
                                               providerIPS.clearAll();

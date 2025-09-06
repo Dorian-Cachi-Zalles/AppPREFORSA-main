@@ -1,12 +1,12 @@
-import 'package:control_de_calidad/core/constants/AuthProvider.dart';
-import 'package:control_de_calidad/core/constants/Providerids.dart';
+import 'package:control_de_calidad/core/services/API_service.dart';
+import 'package:control_de_calidad/modules/auth/providers/AuthProvider.dart';
+import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/core/widgets/custom_container_menu.dart';
 import 'package:control_de_calidad/core/widgets/custom_drawer.dart';
 import 'package:control_de_calidad/core/widgets/settings_page.dart';
 import 'package:control_de_calidad/modules/ControlObservados/screens/Registro_observados.dart';
 import 'package:control_de_calidad/modules/auth/screens/EstadoRegistro.dart';
 import 'package:control_de_calidad/modules/auth/screens/Screen_login.dart';
-import 'package:control_de_calidad/modules/auth/screens/pruebagraficas.dart';
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
 import 'package:control_de_calidad/modules/linea_I6/screens/preformas_ips.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +63,10 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.blueAccent,
           targetColor: Colors.white,
           textColor: Color.fromRGBO(255, 255, 255, 1),
-          child: CustomDrawer(),
+          child: CustomDrawer(
+            MostrarInicio: false,
+            lineaActual: '',
+          ),
         ),
         body: SingleChildScrollView(
             child:
@@ -201,6 +204,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                           Provider.of<AuthProvider>(context,
                                               listen: false);
                                       await authProvider.cerrarSesion();
+                                      await ApiService.asignarCodParte(
+                                        codParte: providerIPS
+                                            .RepoDatosPrincipales
+                                            .items[0]
+                                            .cod_parte!,
+                                        linea: "INY",
+                                        maquina: "I6",
+                                      );
 
                                       Navigator.pushReplacement(
                                         context,
@@ -422,12 +433,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       text: "Control de Aguas",
                       fontSize: settingsModel.fontSize,
                       onTap: () async {
-                        await Navigator.push(
+                        /*  await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => GraficaPrueba(),
+                            builder: (context) =>;
                           ),
-                        );
+                        );*/
                       },
                     ),
                   ),

@@ -1,6 +1,6 @@
-import 'package:control_de_calidad/core/constants/AuthProvider.dart';
+import 'package:control_de_calidad/modules/auth/providers/AuthProvider.dart';
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
-import 'package:control_de_calidad/core/constants/Providerids.dart';
+import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/core/constants/catalogodropdowns.dart';
 import 'package:control_de_calidad/core/widgets/settings_page.dart';
 

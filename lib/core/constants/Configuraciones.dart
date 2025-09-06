@@ -6,10 +6,10 @@ import 'package:http/http.dart' as http;
 
 class Config {
   //LABO
-  //final String baseUrl = "http://192.168.137.200:8000/api";
+  final String baseUrl = "http://192.168.137.200:8000/api";
 
   // MISERVIDOR
-  final String baseUrl = "http://192.168.0.13:8000/api";
+  //final String baseUrl = "http://192.168.0.13:8000/api";
 
   //final String baseUrl = "http://192.168.0.13:8000/api";
 

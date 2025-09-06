@@ -1,5 +1,5 @@
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
-import 'package:control_de_calidad/core/constants/Providerids.dart';
+import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/core/services/API_service.dart';
 import 'package:control_de_calidad/core/services/SQLlite_service.dart';
 import 'package:control_de_calidad/modules/linea_I6/models/Colorante.dart';
@@ -77,8 +77,6 @@ class ProviderI6 with ChangeNotifier {
     'conformidad': 0, // INTEGER NOT NULL
     'observaciones': '', // TEXT (opcional)
     'cod_parte': 0, // INTEGER (opcional)
-    'cod_usuario': 0, // INTEGER (opcional)
-    'turnoCalidad': 'Turno_1', // TEXT (opcional, ejemplo "Día" o "Noche")
     'isConcatenado': 0
   };
   double _promedioTiempoCiclo = 0.0;
@@ -183,6 +181,7 @@ class ProviderI6 with ChangeNotifier {
         cod_dpcalidad INTEGER NOT NULL,
         hora TEXT NOT NULL,
         cod_producto INTEGER NOT NULL,
+        peso_total_contraste REAL NOT NULL,
         conformidad INTEGER NOT NULL,
         observaciones TEXT,
         isConcatenado INTEGER NOT NULL,
@@ -441,9 +440,7 @@ class ProviderI6 with ChangeNotifier {
   }
 
   Future<double?> Saldos(IdsProvider idsProvider) async {
-    final saldo = await ApiService.getValor<double>(
-      endpoint: Config().getEndpointBuscarDato(1, 1),
-      campo: 'cajasSinDeclarar',
+    final saldo = await ApiService.getSaldos(
       idsProvider: idsProvider,
       numeroLinea: 1,
     );
@@ -458,6 +455,50 @@ class ProviderI6 with ChangeNotifier {
       toJsonAPI: (d) => (d).toJsonAPI(),
       endpoint: Config().getEndpoint(1, 1),
     );
+  }
+
+  Future<int?> getCodParte() async {
+    final result = await _db.query(
+      RepoDatosPrincipales.tableName,
+      columns: ['cod_parte'],
+      where: 'cod_parte IS NOT NULL AND cod_parte > 0',
+      orderBy: 'id DESC',
+      limit: 1,
+    );
+
+    if (result.isNotEmpty) {
+      final value = result.first['cod_parte'];
+      return value is int ? value : int.tryParse(value.toString());
+    }
+    return null;
+  }
+
+  Future<void> enviarCodParte() async {
+    final codParte = await getCodParte();
+    if (codParte == null) {
+      print("⚠️ No hay cod_parte válido en la base local");
+      return;
+    }
+
+    await ApiService.asignarCodParte(
+      codParte: codParte,
+      linea: "INY", // fijo
+      maquina: "I6", // fijo
+    );
+  }
+
+  Future<void> enviarCodParteTest() async {
+    final codParte = await getCodParte();
+    if (codParte == null) {
+      print("⚠️ No hay cod_parte válido en la base local");
+      return;
+    }
+
+    // 🚀 Solo imprimimos los valores que se enviarían
+    print("📤 Enviando datos a la API:");
+    print("   cod_parte: $codParte");
+    print("   linea: INY");
+    print("   maquina: I6");
   }
 
   Future<bool> enviarDatosAPIColorante(int id) async {

@@ -129,10 +129,10 @@ INSERT INTO $tableRegistros (id, nombre, numero, estado) VALUES
           "paFinal": 0,
           "controladas": 0,
           "conformidad": 0,
-          "cod_usuario": 10,
-          "turnoCalidad": "Mañana",
+          "cod_usuario": 0,
+          "turnoCalidad": "TURNO_1",
           "linea": "INY",
-          "maquina": "M01"
+          "maquina": "I6"
         }),
         headers: {
           "Content-Type": "application/json",

@@ -1,14 +1,11 @@
 import 'dart:async';
-
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
-import 'package:control_de_calidad/core/constants/Providerids.dart';
-import 'package:control_de_calidad/core/constants/botonguardaractualizado.dart';
+import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
+import 'package:control_de_calidad/core/widgets/botonguardaractualizado.dart';
 import 'package:control_de_calidad/core/widgets/BotonSimple.dart';
 import 'package:control_de_calidad/core/widgets/boton_agregar.dart';
 import 'package:control_de_calidad/core/widgets/boxformularios.dart';
 import 'package:control_de_calidad/core/widgets/checkboxformulario.dart';
-import 'package:control_de_calidad/core/widgets/graficadecontrolgenerico.dart';
-import 'package:control_de_calidad/core/widgets/histogramaGenerico.dart';
 import 'package:control_de_calidad/core/widgets/textsimpleform.dart';
 import 'package:control_de_calidad/core/widgets/titulos.dart';
 import 'package:control_de_calidad/core/widgets/ventanaflotanteAPI.dart';
@@ -27,7 +24,6 @@ class ScreenListDatosPESOSIPS extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<ProviderI6>(context, listen: false);
     final providerregistro = Provider.of<IdsProvider>(context, listen: false);
-    final AM = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Column(
         children: [
@@ -111,34 +107,6 @@ class ScreenListDatosPESOSIPS extends StatelessWidget {
                       );
                     },
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    height: AM * 0.7,
-                    child: HistogramaSlider(
-                      Titulo: 'Peso Tara',
-                      NombreTabla: 'pesoips',
-                      apiUrl: '${Config().baseUrl}/histograma',
-                      NombreVariable: 'pesoTara',
-                      filtroProducto: 'Botella PET 500ml',
-                      filtroGramaje: '25g',
-                      colorColumnas: [Colors.deepPurple, Colors.orangeAccent],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    height: AM * 0.48,
-                    child: GraficoControlGenerico(
-                      Titulo: 'Peso Tara',
-                      NombreTabla: 'pesoips',
-                      apiUrl: '${Config().baseUrl}/graficoControl',
-                      NombreVariable: 'pesoTara',
-                      filtroProducto: 'Botella PET 500ml',
-                      filtroGramaje: '25g',
-                      TipoDeGrafica: 1,
-                      //tamanioSubgrupo: 3,
-                      colorLinea: Colors.deepPurple,
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -160,6 +128,7 @@ class ScreenListDatosPESOSIPS extends StatelessWidget {
             hora: DateFormat('HH:mm').format(DateTime.now()),
             pa: '',
             conformidad: false,
+            peso_total_contraste: 0,
             observaciones: '',
             cod_producto: 0,
             isConcatenado: false,
@@ -493,6 +462,16 @@ class _FormularioGeneralDatosPESOSIPSState
             name: 'hora',
             label: 'Hora',
             valorInicial: widget.widget.hora,
+          ),
+          CustomInputField(
+            name: 'peso_total_contraste',
+            onChanged: (value) {
+              _guardarAutoDebounce(widget.widget);
+            },
+            label: 'Peso Total Real (Balanza)',
+            valorInicial: widget.widget.peso_total_contraste.toString(),
+            isNumeric: true,
+            isRequired: true,
           ),
           CheckboxSimple(
             label: 'Conformidad',

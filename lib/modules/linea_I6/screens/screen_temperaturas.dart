@@ -1,14 +1,12 @@
 import 'dart:async';
 
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
-import 'package:control_de_calidad/core/constants/Providerids.dart';
-import 'package:control_de_calidad/core/constants/botonguardaractualizado.dart';
+import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
+import 'package:control_de_calidad/core/widgets/botonguardaractualizado.dart';
 import 'package:control_de_calidad/core/constants/catalogodropdowns.dart';
 import 'package:control_de_calidad/core/widgets/boton_agregar.dart';
 import 'package:control_de_calidad/core/widgets/boxformularios.dart';
 import 'package:control_de_calidad/core/widgets/dropdownformulario.dart';
-import 'package:control_de_calidad/core/widgets/graficadecontrolgenerico.dart';
-import 'package:control_de_calidad/core/widgets/histogramaGenerico.dart';
 import 'package:control_de_calidad/core/widgets/textsimpleform.dart';
 import 'package:control_de_calidad/core/widgets/titulos.dart';
 import 'package:control_de_calidad/modules/linea_I6/models/Temperatura.dart';
@@ -23,7 +21,6 @@ class ScreenListDatosTEMPIPS extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<ProviderI6>(context, listen: false);
     final providerregistro = Provider.of<IdsProvider>(context, listen: false);
-    final AM = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Column(
         children: [
@@ -103,34 +100,6 @@ class ScreenListDatosTEMPIPS extends StatelessWidget {
                         },
                       );
                     },
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    height: AM * 0.7,
-                    child: HistogramaSlider(
-                      Titulo: 'Peso Tara',
-                      NombreTabla: 'pesoips',
-                      apiUrl: 'http://192.168.0.13:8000/api/histograma',
-                      NombreVariable: 'PesoTara',
-                      filtroProducto: 'Botella PET 500ml',
-                      filtroGramaje: '25g',
-                      colorColumnas: [Colors.deepPurple, Colors.orangeAccent],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    height: AM * 0.48,
-                    child: GraficoControlGenerico(
-                      Titulo: 'Peso Tara',
-                      NombreTabla: 'pesoips',
-                      apiUrl: 'http://192.168.0.13:8000/api/graficoControl',
-                      NombreVariable: 'PesoTara',
-                      filtroProducto: 'Botella PET 500ml',
-                      filtroGramaje: '25g',
-                      TipoDeGrafica: 1,
-                      //tamanioSubgrupo: 3,
-                      colorLinea: Colors.deepPurple,
-                    ),
                   ),
                 ],
               ),

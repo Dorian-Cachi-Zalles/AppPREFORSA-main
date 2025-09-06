@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:control_de_calidad/core/constants/Providerids.dart';
+import 'package:control_de_calidad/core/constants/Configuraciones.dart';
+import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -199,6 +200,52 @@ class ApiService {
     );
   }
 
+  static Future<double?> getSaldos({
+    required IdsProvider idsProvider,
+    required int numeroLinea,
+  }) async {
+    final int? id = await idsProvider.getNumeroById(numeroLinea);
+    final baseurl = Config().baseUrl;
+
+    try {
+      final url = Uri.parse('$baseurl/Saldos/$id');
+      print('Llamando a API: $url');
+
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+      ).timeout(const Duration(seconds: 5));
+
+      print('Status code: ${response.statusCode}');
+      print('Body: ${response.body}');
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final data = jsonDecode(response.body);
+
+        if (data['id'] != null && data['sinDeclarar'] != null) {
+          // ✅ Imprimir el ID solo para testeo
+          print("ID recibido: ${data['id']}");
+
+          // ✅ Retornar únicamente el valor de sinDeclarar como double
+          return (data['sinDeclarar'] is String)
+              ? double.tryParse(data['sinDeclarar'])
+              : (data['sinDeclarar'] as num).toDouble();
+        }
+        return null;
+      } else {
+        print('Error en la respuesta: ${response.statusCode}');
+        return null;
+      }
+    } catch (e, st) {
+      print('Excepción: $e');
+      print(st);
+      return null;
+    }
+  }
+
   // Método genérico para hacer GET y obtener un valor de la API
   static Future<T?> getValor<T>({
     required String endpoint,
@@ -232,7 +279,13 @@ class ApiService {
 
         // Conversión segura a double si T es double
         if (T == double) {
-          return (valorJson is int ? valorJson.toDouble() : valorJson) as T;
+          if (valorJson is int) {
+            return valorJson.toDouble() as T;
+          } else if (valorJson is String) {
+            return double.tryParse(valorJson) as T?;
+          } else if (valorJson is double) {
+            return valorJson as T;
+          }
         }
 
         return valorJson as T;
@@ -297,6 +350,31 @@ class ApiService {
     } catch (e) {
       print("❌ Error en enviarDatosAmbos: $e");
       return false;
+    }
+  }
+
+  static Future<void> asignarCodParte({
+    required int codParte,
+    required String linea,
+    required String maquina,
+  }) async {
+    final url = Uri.parse("${Config().baseUrl}/asignarCodParte");
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "cod_parte": codParte,
+        "linea": linea,
+        "maquina": maquina,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print("✅ ${data['message']}");
+      print("📊 Registros: ${data['registros_actualizados']}");
+    } else {
+      print("❌ Error ${response.statusCode}: ${response.body}");
     }
   }
 }
