@@ -75,7 +75,7 @@ class _ScreenPreformasI5State extends State<ScreenRegistroObservado> {
       ScreenListDatosPESOSIPS(),
       const ListaGenericaScreen2(
         titulo: SizedBox(),
-        url: "http://192.168.0.13:8000/api/ObtenerValor",
+        url: "http://192.168.0.13:8000/api/ObtenerValores",
         multiple: true,
         bodyPost: {
           "table": "producto_terminado",

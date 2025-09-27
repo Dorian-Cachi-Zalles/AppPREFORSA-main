@@ -1,4 +1,4 @@
-class ModeloDatosPrincipales {
+class ModeloDatosPrincipalesI6 {
   final int? id;
   final bool hasErrors;
   final int? cod_parte;
@@ -14,7 +14,7 @@ class ModeloDatosPrincipales {
   final int cod_usuario;
   final String turnoCalidad;
 
-  const ModeloDatosPrincipales({
+  const ModeloDatosPrincipalesI6({
     this.id,
     required this.hasErrors,
     this.cod_parte,
@@ -31,8 +31,8 @@ class ModeloDatosPrincipales {
     required this.turnoCalidad,
   });
 
-  factory ModeloDatosPrincipales.fromMap(Map<String, dynamic> map) {
-    return ModeloDatosPrincipales(
+  factory ModeloDatosPrincipalesI6.fromMap(Map<String, dynamic> map) {
+    return ModeloDatosPrincipalesI6(
       id: map['id'] as int?,
       hasErrors: map['hasErrors'] == 1,
       cod_parte: map['cod_parte'],
@@ -50,9 +50,9 @@ class ModeloDatosPrincipales {
     );
   }
 
-  ModeloDatosPrincipales copyWithForm(Map<String, dynamic> formValues,
+  ModeloDatosPrincipalesI6 copyWithForm(Map<String, dynamic> formValues,
       {double? TiempoCiclo, bool? hasErrors}) {
-    return ModeloDatosPrincipales(
+    return ModeloDatosPrincipalesI6(
         id: id,
         hasErrors: hasErrors ?? this.hasErrors,
         cod_parte: cod_parte,
@@ -104,7 +104,7 @@ class ModeloDatosPrincipales {
     };
   }
 
-  ModeloDatosPrincipales copyWith(
+  ModeloDatosPrincipalesI6 copyWith(
       {int? id,
       bool? hasErrors,
       int? cod_parte,
@@ -119,7 +119,7 @@ class ModeloDatosPrincipales {
       bool? isConcatenado,
       int? cod_usuario,
       String? turnoCalidad}) {
-    return ModeloDatosPrincipales(
+    return ModeloDatosPrincipalesI6(
       id: id ?? this.id,
       hasErrors: hasErrors ?? this.hasErrors,
       cod_parte: cod_parte ?? this.cod_parte,
@@ -138,7 +138,7 @@ class ModeloDatosPrincipales {
   }
 }
 
-extension ModeloDatosPrincipalesApi on ModeloDatosPrincipales {
+extension ModeloDatosPrincipalesI6Api on ModeloDatosPrincipalesI6 {
   Map<String, dynamic> toJsonAPI() {
     final map = <String, dynamic>{
       "modalidad": modalidad,

@@ -17,9 +17,9 @@ import 'package:sqflite/sqflite.dart';
 class ProviderI6 with ChangeNotifier {
   late Database _db;
   final RepoDatosPrincipales =
-      GenericRepositoryDatosList<ModeloDatosPrincipales>(
+      GenericRepositoryDatosList<ModeloDatosPrincipalesI6>(
     tableName: 'tablaDatosPrincipales',
-    fromMap: (map) => ModeloDatosPrincipales.fromMap(map),
+    fromMap: (map) => ModeloDatosPrincipalesI6.fromMap(map),
     toMap: (d) => d.toMap(),
     copyWithId: (d, id) => d.copyWith(id: id),
   );
@@ -88,7 +88,7 @@ class ProviderI6 with ChangeNotifier {
 
   Future<void> init() async {
     _db = await openDatabase(
-      p.join(await getDatabasesPath(), 'tablalineaI9.db'),
+      p.join(await getDatabasesPath(), 'tablalineaI6.db'),
       version: 1,
       onCreate: (db, version) => createTable(db),
     );
@@ -97,7 +97,7 @@ class ProviderI6 with ChangeNotifier {
 
   Future<void> _initDatabase() async {
     _db = await openDatabase(
-      p.join(await getDatabasesPath(), 'tablalineaI9.db'),
+      p.join(await getDatabasesPath(), 'tablalineaI6.db'),
       version: 1,
       onCreate: (db, version) => createTable(db),
     );
@@ -264,8 +264,8 @@ class ProviderI6 with ChangeNotifier {
   }
 
   Future<void> addDatosPrincipales() async {
-    final ModeloDatosPrincipales nuevoDato =
-        ModeloDatosPrincipales.fromMap(defaultValuesDatosIniciales);
+    final ModeloDatosPrincipalesI6 nuevoDato =
+        ModeloDatosPrincipalesI6.fromMap(defaultValuesDatosIniciales);
     await RepoDatosPrincipales.add(_db, nuevoDato);
     notifyListeners();
   }
@@ -307,7 +307,7 @@ class ProviderI6 with ChangeNotifier {
   }
 
   Future<void> updateDatosPrincipales(
-      int id, ModeloDatosPrincipales updatedDato) async {
+      int id, ModeloDatosPrincipalesI6 updatedDato) async {
     await RepoDatosPrincipales.update(_db, id, updatedDato);
     notifyListeners();
   }

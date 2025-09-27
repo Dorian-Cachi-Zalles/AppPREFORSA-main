@@ -3,10 +3,13 @@ import 'package:control_de_calidad/core/constants/Configuraciones.dart';
 import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/core/constants/catalogodropdowns.dart';
 import 'package:control_de_calidad/core/widgets/settings_page.dart';
-
 import 'package:control_de_calidad/modules/auth/screens/Screen_login.dart';
 import 'package:control_de_calidad/modules/auth/screens/home_screen.dart';
+import 'package:control_de_calidad/modules/linea_CCM/providers/DatosProviderCCM.dart';
+import 'package:control_de_calidad/modules/linea_Coloracap/providers/DatosProviderColora.dart';
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
+import 'package:control_de_calidad/modules/linea_I9/providers/DatosProviderPrefI9.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/providers/DatosProviderSoplado.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -86,6 +89,12 @@ void main() async {
           ChangeNotifierProvider(create: (_) => SettingsProvider()),
           ChangeNotifierProvider(create: (_) => IdsProvider()),
           ChangeNotifierProvider(create: (_) => ProviderI6()),
+          ChangeNotifierProvider(create: (_) => ProviderI9()),
+          ChangeNotifierProvider(create: (_) => ProviderColora()),
+          ChangeNotifierProvider(create: (_) => ProviderCCM()),
+           ChangeNotifierProvider(create: (_) => ProviderSoplado1()),
+
+
           ChangeNotifierProvider(create: (_) => AuthProvider()),
           ChangeNotifierProvider(
             create: (_) {

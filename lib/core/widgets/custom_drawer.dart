@@ -1,7 +1,10 @@
 import 'package:control_de_calidad/modules/auth/providers/AuthProvider.dart';
 import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/modules/auth/screens/home_screen.dart';
+import 'package:control_de_calidad/modules/linea_CCM/screens/CCM.dart';
+import 'package:control_de_calidad/modules/linea_Coloracap/screens/Coloracap.dart';
 import 'package:control_de_calidad/modules/linea_I6/screens/preformas_ips.dart';
+import 'package:control_de_calidad/modules/linea_I9/screens/preformas_I9.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -127,7 +130,11 @@ class CustomDrawer extends StatelessWidget {
       case 'I6':
         return const ScreenPreformasIPS();
       case 'I9':
-        return null; // Puedes asignar otra pantalla
+        return const ScreenPreformasI9();
+      case 'COLORACAP':
+        return const ScreenColoracap();
+      case 'CCM':
+        return const ScreenCCM();
       default:
         return null;
     }

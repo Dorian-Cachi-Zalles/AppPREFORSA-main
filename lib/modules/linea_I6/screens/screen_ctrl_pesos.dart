@@ -24,6 +24,45 @@ class ScreenListDatosPESOSIPS extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<ProviderI6>(context, listen: false);
     final providerregistro = Provider.of<IdsProvider>(context, listen: false);
+    final String url = "${Config().baseUrl}/ObtenerValores";
+    const Map<String, dynamic> bodyPostBase = {
+      "table": "producto_terminado",
+      "limit": 20,
+      "orderBy": "fecha_prod",
+      "orderDir": "desc",
+      "lookups": [
+        {
+          "tabla": "preforma",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_preforma",
+          "campoMostrar": "color",
+        },
+        {
+          "tabla": "preforma",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_preforma",
+          "campoMostrar": "gramo"
+        }
+      ]
+    };
+    const Map<String, String> CamposMostrar = {
+      "pa": "PA",
+      "contenedor": "Empaque",
+      "cantidad": "Cantidad",
+      "peso_embalaje": "Peso Tara",
+      "peso_neto": "Peso Neto",
+      "total": "Peso Total",
+      "Producto": "Producto"
+    };
+    Map<String, dynamic> buildBodyPost2(int idSeleccionado) {
+      return {
+        ...bodyPostBase, // 🔹 copia lo constante
+        "filters": {
+          //"fecha_parte__lastweek": true
+          "cod_producto": idSeleccionado,
+        },
+      };
+    }
     return Scaffold(
       body: Column(
         children: [
@@ -102,6 +141,37 @@ class ScreenListDatosPESOSIPS extends StatelessWidget {
                                 ),
                               );
                             },
+                            textoBoton: 'Ver PA',
+                            showButton: true,
+                            onButtonPressed: () => showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return Builder(builder: (innerContext) {
+          return ListaViewerDialog(
+            url: url,
+            bodyPost: buildBodyPost2(dtdatospesosips.cod_producto),
+            camposMostrar: CamposMostrar,
+             mostraronpress: false,
+            transformador: (item) {
+              final v1 = toNum(item["peso_embalaje"]);
+              final v2 = toNum(item["peso_neto"]);
+              final total = v1 + v2;
+              final pa = item["pa"].toString();
+              final Producto =
+                  "${item["color"] ?? ""} ${item["gramo"] ?? ""}".trim();
+
+              return {
+                ...item, // mantiene todos los originales
+                "total": total,
+                "pa": pa,
+                "Producto": Producto,
+              };
+            },
+            titulo: "PA seleccionado",
+          );
+        });
+      },
+    ),
                           );
                         },
                       );
@@ -192,7 +262,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
   @override
   Widget build(BuildContext context) {
     final providerI6 = Provider.of<ProviderI6>(context, listen: false);
-    final String url = "${Config().baseUrl}/ObtenerValor";
+    final String url = "${Config().baseUrl}/ObtenerValores";
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,

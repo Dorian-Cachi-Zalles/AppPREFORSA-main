@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:control_de_calidad/modules/auth/providers/AuthProvider.dart';
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
 import 'package:control_de_calidad/modules/auth/screens/home_screen.dart';
+import 'package:control_de_calidad/modules/linea_Coloracap/providers/DatosProviderColora.dart';
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
+import 'package:control_de_calidad/modules/linea_I9/providers/DatosProviderPrefI9.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -47,6 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final providerI6 = Provider.of<ProviderI6>(context, listen: false);
+      final providerI9 = Provider.of<ProviderI9>(context, listen: false);
+      final providerColora = Provider.of<ProviderColora>(context, listen: false);
 
       final response = await http.post(
         Uri.parse("${url.baseUrl}/login"),
@@ -59,14 +63,26 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response.statusCode == 200 && data["success"] == true) {
         // 🔹 Login exitoso
         final datosIPS = providerI6.RepoDatosPrincipales.items[0];
+        final datosI9 = providerI9.RepoDatosPrincipales.items[0];
+        final datosColora = providerColora.RepoDatosPrincipales.items[0];
 
         final actualizado = datosIPS.copyWith(
           cod_usuario: data['user']['id'],
           turnoCalidad: turnoSeleccionado,
         );
-        print('el id es ojooooooo ${data['user']['id']}');
+        final actualizadoI9 = datosI9.copyWith(
+          cod_usuario: data['user']['id'],
+          turnoCalidad: turnoSeleccionado,
+        );
+        final actualizadoColora = datosColora.copyWith(
+          cod_usuario: data['user']['id'],
+          turnoCalidad: turnoSeleccionado,
+        );
+    
 
         providerI6.updateDatosPrincipales(1, actualizado);
+        providerI9.updateDatosPrincipales(1, actualizadoI9);
+        providerColora.updateDatosPrincipales(1, actualizadoColora);
 
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         await authProvider.iniciarSesion(nombreUsuario: data['user']['name']);

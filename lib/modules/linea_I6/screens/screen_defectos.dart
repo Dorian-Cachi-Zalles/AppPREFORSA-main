@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
 import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/core/widgets/botonguardardoble.dart';
@@ -8,7 +7,6 @@ import 'package:control_de_calidad/core/widgets/BotonSimple.dart';
 import 'package:control_de_calidad/core/widgets/boton_agregar.dart';
 import 'package:control_de_calidad/core/widgets/boxformularios.dart';
 import 'package:control_de_calidad/core/widgets/checkboxformulario.dart';
-import 'package:control_de_calidad/core/widgets/diagramadebarrasString.dart';
 import 'package:control_de_calidad/core/widgets/textsimpleform.dart';
 import 'package:control_de_calidad/core/widgets/titulos.dart';
 import 'package:control_de_calidad/core/widgets/ventanaflotanteAPI.dart';
@@ -28,8 +26,47 @@ class ScreenListDatosDEFIPS extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProviderI6>(context, listen: false);
-    final providerregistro = Provider.of<IdsProvider>(context, listen: false);
-    final AM = MediaQuery.of(context).size.height;
+    final providerregistro = Provider.of<IdsProvider>(context, listen: false);    
+    final String urlOV = "${Config().baseUrl}/ObtenerValores";
+     const Map<String, dynamic> bodyPostBase = {
+      "table": "producto_terminado",
+      "limit": 20,
+      "orderBy": "fecha_prod",
+      "orderDir": "desc",
+      "lookups": [
+        {
+          "tabla": "preforma",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_preforma",
+          "campoMostrar": "color",
+        },
+        {
+          "tabla": "preforma",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_preforma",
+          "campoMostrar": "gramo"
+        }
+      ]
+    };
+     const Map<String, String> CamposMostrar = {
+      "pa": "PA",
+      "contenedor": "Empaque",
+      "cantidad": "Cantidad",
+      "peso_embalaje": "Peso Tara",
+      "peso_neto": "Peso Neto",
+      "total": "Peso Total",
+      "Producto": "Producto"
+    };
+    Map<String, dynamic> buildBodyPost2(List<int> idSeleccionado) {
+      return {
+        ...bodyPostBase, // 🔹 copia lo constante
+        "filters": {
+          //"fecha_parte__lastweek": true
+          "cod_producto__in": idSeleccionado,
+        },
+      };
+    }
+
     return Scaffold(
       body: Column(
         children: [
@@ -101,16 +138,76 @@ class ScreenListDatosDEFIPS extends StatelessWidget {
                                 'Observaciones ',
                                 1,
                                 dtdatosdefips.observaciones
-                              ],
-                              ['Hay observados ', 5, dtdatosdefips.isObservado],
-                              if (dtdatosdefips.isObservado)
-                                [
-                                  'Atributo de observacion ',
-                                  5,
-                                  dtdatosdefips.isObservado
-                                ]
+                              ],                             
+                             if (dtdatosdefips.isObservado && dtdatosproducicionobservada != null) ...[
+  [
+    'Atributo de \nNo Conformidad ',
+    1,
+    '\n${dtdatosproducicionobservada.atributoDeNC}',                                  
+  ],
+  [
+    'Estado del Producto',
+    1,
+    dtdatosproducicionobservada.estadoProducto,                                  
+  ],
+  [
+    'Cantidad Retenida (Cajas) ',
+    1,
+    dtdatosproducicionobservada.cantidadRetenidaPorEmpaque.toString(),                                  
+  ],
+  [
+    'Desvio ',
+    1,
+    dtdatosproducicionobservada.desvio,                                  
+  ],
+   [
+    'Etiqueta Calidad ',
+    1,
+    dtdatosproducicionobservada.etiquetaCalidad,                                  
+  ],
+  [
+    'Aparicion del Defecto ',
+    1,
+    dtdatosproducicionobservada.aparicionDefecto,                                  
+  ],
+  [
+    'Estado Producto Conforme ',
+    1,
+    dtdatosproducicionobservada.estadoProductoConforme,                                  
+  ],
+  [
+    'Cant. reproce No Conforme',
+    1,
+    dtdatosproducicionobservada.reprocesoNoConformePzas.toString(),                                  
+  ],
+  [
+    'Estado Producto No Conforme ',
+    1,
+    dtdatosproducicionobservada.estadoProductoNoConforme,                                  
+  ],
+  [
+    'Cantidad Defectos Muestra ',
+    1,
+    dtdatosproducicionobservada.cantidadDefectosMuestra.toString(),                                  
+  ],
+  [
+    'Criticidad ',
+    1,
+    dtdatosproducicionobservada.criticidad,                                  
+  ],
+  [
+    'Seccion donde \nse encontro el Defecto ',
+    1,
+    '\n${dtdatosproducicionobservada.seccionDefecto}'
+    ,                                  
+  ],
+
+
+]        
+                                
                             ]),
                             hasErrors: dtdatosdefips.hasErrors,
+                            textoBoton: 'Ver PA',
                             onOpenModal: () {
                               if (dtdatosproducicionobservada == null) return;
                               Navigator.push(
@@ -123,27 +220,54 @@ class ScreenListDatosDEFIPS extends StatelessWidget {
                                         dtdatosproducicionobservada,
                                   ),
                                 ),
+                                
                               );
                             },
+                            showButton: dtdatosdefips.isObservado,
+                          onButtonPressed: () {  
+  if (dtdatosproducicionobservada != null) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return Builder(builder: (innerContext) {
+          return ListaViewerDialog(
+            url: urlOV,
+            bodyPost: buildBodyPost2(dtdatosproducicionobservada.cod_producto),
+            camposMostrar: CamposMostrar,
+             mostraronpress: false,
+            transformador: (item) {
+              final v1 = toNum(item["peso_embalaje"]);
+              final v2 = toNum(item["peso_neto"]);
+              final total = v1 + v2;
+              final pa = item["pa"].toString();
+              final Producto =
+                  "${item["color"] ?? ""} ${item["gramo"] ?? ""}".trim();
+
+              return {
+                ...item, // mantiene todos los originales
+                "total": total,
+                "pa": pa,
+                "Producto": Producto,
+              };
+            },
+            titulo: "PA seleccionado",
+          );
+        });
+      },
+    );
+  } else {
+    // Opcional: mostrar un mensaje si no hay datos
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("No hay datos disponibles")),
+    );
+  }
+},
+
                           );
                         },
                       );
                     },
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    height: AM * 0.8,
-                    child: FrecuenciaSlider(
-                      titulo: 'Materia Prima',
-                      NombreTabla: 'mp',
-                      apiUrl: '${Config().baseUrl}/graficoColumnas',
-                      NombreVariable: 'MateriaPrima',
-                      filtroProducto: 'Botella PET 500ml',
-                      filtroGramaje: '25g',
-                      mostrarAnual: 3,
-                      mostrarMensual: 3,
-                    ),
-                  ),
+                  ),                 
                 ],
               ),
             ),
@@ -185,7 +309,7 @@ class ScreenListDatosDEFIPS extends StatelessWidget {
               estadoProductoNoConforme: ' ', // Ya sabemos que no es 0 ni null
               criticidad: ' ',
               seccionDefecto: ' ',
-              etiquetaCalidad: 'Rojo',
+              etiquetaCalidad: 'Roja',
               cantidadDefectosMuestra: 0,
               cod_producto: [0],
               isConcatenado: false));
@@ -286,7 +410,7 @@ class _EditDatosDEFIPSFormState extends State<EditDatosDEFIPSForm> {
 
     final List<String> opcionesnormales =
         List<String>.from(dropOptionsDatosObservados['NCAtributo'] ?? []);
-    final String url = "${Config().baseUrl}/ObtenerValor";
+    final String url = "${Config().baseUrl}/ObtenerValores";
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
@@ -306,6 +430,13 @@ class _EditDatosDEFIPSFormState extends State<EditDatosDEFIPSForm> {
           "campoMostrar": "gramo"
         }
       ]
+    };
+    const Map<String, String> CamposMostrar2 = {
+      "pa": "PA",
+      "contenedor": "Empaque",
+      "cantidad": "Cantidad",
+      "peso_embalaje": "Peso Tara",
+      "peso_neto": "Peso Neto",     
     };
     const Map<String, String> CamposMostrar = {
       "pa": "PA",
@@ -411,7 +542,7 @@ class _EditDatosDEFIPSFormState extends State<EditDatosDEFIPSForm> {
                                                   bodyPost: buildBodyPost1(),
                                                   multiple: true,
                                                   campoId: "cod_producto",
-                                                  camposMostrar: CamposMostrar,
+                                                  camposMostrar: CamposMostrar2,
                                                   camposImpo: const ['pa'],
                                                   titulo: const Expanded(
                                                       child: Text(

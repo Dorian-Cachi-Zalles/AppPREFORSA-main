@@ -6,19 +6,24 @@ import 'package:http/http.dart' as http;
 
 class Config {
   //LABO
-  final String baseUrl = "http://192.168.137.200:8000/api";
+  //final String baseUrl = "http://192.168.137.200:8000/api";
 
-  // MISERVIDOR
-  //final String baseUrl = "http://192.168.0.13:8000/api";
+  
+  //final String baseUrl = "http://192.168.137.105:8080/api";
 
-  //final String baseUrl = "http://192.168.0.13:8000/api";
+  final String baseUrl = "http://192.168.0.13:8080/api";
+
+  //final String baseUrl = "http://18.223.111.43/api";
+
+
+  
 
   final List<String> _numeroLineas = [
     'prueba',
     'ControlCalidad',
     'crear-dos',
     'I6',
-    'I9'
+    'Coloracap'
   ];
 
   final Map<int, Map<int, String>> _endpoints = {
@@ -40,6 +45,12 @@ class Config {
       1: '/Parametros',
       2: '/Temperatura',
     },
+    4:{
+      1: '/def_2',
+      2: '/def_3',
+    }
+
+
   };
 
   String getEndpoint(int linea, int recurso) {
@@ -74,8 +85,11 @@ class Config {
   static Map<int, Color> colores = {
     1: Color.alphaBlend(Colors.white.withOpacity(0.5), Colors.blueAccent[100]!),
     //2: Colors.green[200]!,
-    2: Colors.lime[100]!,
-    3: Colors.red[100]!,
+    2: const Color.fromARGB(255, 236, 236, 189),
+    3:Color.alphaBlend(Colors.white.withOpacity(0.5),Color.fromARGB(255, 255, 188, 188)),
+    4: Color.alphaBlend(Colors.white.withOpacity(0.5),const Color.fromARGB(255, 212, 180, 255)),
+    
+    
   };
 }
 

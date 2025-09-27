@@ -74,7 +74,7 @@ class _ScreenDatosprincipalesi6State extends State<ScreenDatosprincipalesi6> {
         final catalogosProvider = Provider.of<CatalogosProvider>(context);
         final Map<String, List<dynamic>> dropOptions =
             catalogosProvider.getCatalogo('DatosIniciales');
-        final String url = "${Config().baseUrl}/ObtenerValor";
+        final String url = "${Config().baseUrl}/ObtenerValores";
         // 🔹 Parte constante
         const Map<String, dynamic> bodyPostBase = {
           "table": "prd_parte_resumen",
@@ -143,7 +143,7 @@ class _ScreenDatosprincipalesi6State extends State<ScreenDatosprincipalesi6> {
           };
         }
 
-        void _guardarAuto(ModeloDatosPrincipales datos) {
+        void _guardarAuto(ModeloDatosPrincipalesI6 datos) {
           final formState = _formKey.currentState;
           if (formState != null) {
             formState.save();
@@ -164,7 +164,7 @@ class _ScreenDatosprincipalesi6State extends State<ScreenDatosprincipalesi6> {
         }
 
         Timer? _debounce;
-        void _guardarAutoDebounce(ModeloDatosPrincipales datos) {
+        void _guardarAutoDebounce(ModeloDatosPrincipalesI6 datos) {
           if (_debounce?.isActive ?? false) _debounce!.cancel();
           _debounce = Timer(const Duration(milliseconds: 500), () {
             _guardarAuto(datos);
@@ -380,7 +380,7 @@ class _ScreenDatosprincipalesi6State extends State<ScreenDatosprincipalesi6> {
               ),
             ),
             bottomNavigationBar: BotonDeslizableGenericoInicial<ProviderI6,
-                    ModeloDatosPrincipales>(
+                    ModeloDatosPrincipalesI6>(
                 colorcito: Config.colores[1]!,
                 obtenerHasError: (provider, id) {
                   final item = provider.RepoDatosPrincipales.items

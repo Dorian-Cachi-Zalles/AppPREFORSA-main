@@ -111,10 +111,10 @@ extension ModeloColoranteApi on ModeloColorante {
       "cod_dpcalidad": cod_dpcalidad,
       "colorante": colorante,
       "codigo": codigo,
-      "kl": kl,
+      "kl_lote": kl,
       "bp": bp,
       "dosificacion": dosificacion,
-      "cantidadBolsone": cantidadBolsone
+      "cantidad": cantidadBolsone,      
     };
   }
 }

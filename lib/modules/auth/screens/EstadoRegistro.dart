@@ -1,5 +1,6 @@
 import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
+import 'package:control_de_calidad/modules/linea_I9/providers/DatosProviderPrefI9.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -18,26 +19,30 @@ class _ScreenEstadoRegistrosState extends State<ScreenEstadoRegistros> {
     final providerIPS = Provider.of<ProviderI6>(
       context,
     );
+    final providerI9 = Provider.of<ProviderI9>(
+      context,
+    );
+
 
     final List<Map<String, dynamic>> LineasDescripcion = [
       {
         'title': 'I6',
-        'description': 'Preformas I6(Pequeñas)',
+        'description': 'Preformas (Medianas)',
         'color': Colors.cyan[700],
         'Foto': 'images/I6.png',
         'Foto2': 'images/I62.png',
       },
       {
         'title': 'I9',
-        'description': 'Preformas I6(Pequeñas)',
-        'color': Colors.redAccent[700],
+        'description': 'Preformas (Pequeñas)',        
+        'color': Colors.lime[900]!,
         'Foto': 'images/I9.png',
         'Foto2': 'images/I92.png',
       },
       {
         'title': 'COLORACAP',
         'description': 'Impresion de Tapas',
-        'color': Colors.lime[900]!,
+        'color': Colors.redAccent[700],
         'Foto': 'images/coloracap.png',
         'Foto2': 'images/coloracap2.png',
       },
@@ -212,15 +217,15 @@ class _ScreenEstadoRegistrosState extends State<ScreenEstadoRegistros> {
                               switch (index) {
                                 case 0:
                                   messageId =
-                                      await providerregistro.createRegistroI6();
-                                  print(messageId);
+                                      await providerregistro.createRegistroI6();                                  
                                   break;
                                 case 1:
-                                  messageId = 20;
+                                  messageId =
+                                      await providerregistro.createRegistroI9(); 
                                   break;
                                 case 2:
-                                  messageId = 60;
-                                  providerIPS.enviarCodParteTest();
+                                   messageId =
+                                      await providerregistro.createRegistroColora(); 
                                   break;
                                 case 3:
                                   messageId = 40;
@@ -273,7 +278,8 @@ class _ScreenEstadoRegistrosState extends State<ScreenEstadoRegistros> {
                                               providerIPS.clearAll();
                                               break;
                                             case 1:
-                                              providerIPS.clearAll();
+                                            providerI9.enviarCodParte();
+                                              providerI9.clearAll();
                                               break;
                                             // otros casos...
                                           }

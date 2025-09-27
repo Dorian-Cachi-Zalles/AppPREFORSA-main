@@ -147,6 +147,90 @@ INSERT INTO $tableRegistros (id, nombre, numero, estado) VALUES
 
         return messageId;
       } else {
+         print("❌ Error en la respuesta del servidor: ${response.statusCode}");
+      print("📌 Body: ${response.body}");
+        throw Exception(
+            'Error en la respuesta del servidor: ${response.statusCode}');
+      }
+    } on TimeoutException {
+      throw Exception('Tiempo de espera agotado al conectar con el servidor');
+    } on SocketException {
+      throw Exception('Error de conexión con el servidor');
+    } catch (e) {
+      throw Exception('Error inesperado: $e');
+          }
+  }
+
+  Future<int> createRegistroI9() async {
+    try {
+      final response = await http.post(
+        Uri.parse(Config().getEndpoint(1, 1)),
+        body: json.encode({
+          "modalidad": "Normal",
+          "tiempoCicloCalidad": 0,
+          "paInicial": 0,
+          "paFinal": 0,
+          "controladas": 0,
+          "conformidad": 0,
+          "cod_usuario": 0,
+          "turnoCalidad": "TURNO_1",
+          "linea": "INY",
+          "maquina": "I9"
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept":
+              "application/json", // Asegura que reciba JSON en vez de HTML
+        },
+      ).timeout(const Duration(seconds: 2)); // Tiempo límite de espera
+
+      if (response.statusCode == 201) {
+        final data = json.decode(response.body);
+        final int messageId = data['id'];
+
+        return messageId;
+      } else {
+        throw Exception(
+            'Error en la respuesta del servidor: ${response.statusCode}');
+      }
+    } on TimeoutException {
+      throw Exception('Tiempo de espera agotado al conectar con el servidor');
+    } on SocketException {
+      throw Exception('Error de conexión con el servidor');
+    } catch (e) {
+      throw Exception('Error inesperado: $e');
+    }
+  }
+
+  Future<int> createRegistroColora() async {
+    try {
+      final response = await http.post(
+        Uri.parse(Config().getEndpoint(1, 1)),
+        body: json.encode({
+          "modalidad": "Normal",
+          "tiempoCicloCalidad": 0,
+          "paInicial": 0,
+          "paFinal": 0,
+          "controladas": 0,
+          "conformidad": 0,
+          "cod_usuario": 0,
+          "turnoCalidad": "TURNO_1",
+          "linea": "IMP",
+          "maquina": "IM1"
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept":
+              "application/json", // Asegura que reciba JSON en vez de HTML
+        },
+      ).timeout(const Duration(seconds: 2)); // Tiempo límite de espera
+
+      if (response.statusCode == 201) {
+        final data = json.decode(response.body);
+        final int messageId = data['id'];
+
+        return messageId;
+      } else {
         throw Exception(
             'Error en la respuesta del servidor: ${response.statusCode}');
       }

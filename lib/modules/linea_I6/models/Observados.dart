@@ -186,7 +186,7 @@ extension Modelocc_observadosApi on ModeloObservados {
       "cod_producto": cod_producto,
       "cantidadDefectosMuestra": cantidadDefectosMuestra,
       "criticidad": criticidad,
-      "seccionDefecto": seccionDefecto
+      "seccionDefecto": seccionDefecto,
     };
   }
 }

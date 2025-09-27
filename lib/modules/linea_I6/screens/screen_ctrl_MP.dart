@@ -30,7 +30,7 @@ class _ScreenListDatosMPIPSState extends State<ScreenListDatosMPIPS> {
   Widget build(BuildContext context) {
     final provider = Provider.of<ProviderI6>(context, listen: false);
     final providerregistro = Provider.of<IdsProvider>(context, listen: false);
-    final String urlOV = "${Config().baseUrl}/ObtenerValor";
+    final String urlOV = "${Config().baseUrl}/ObtenerValores";
     const Map<String, dynamic> bodyPostBase = {
       "table": "prd_parte_det_mp",
       "limit": 10,
@@ -412,7 +412,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
     final catalogosProvider = Provider.of<CatalogosProvider>(context);
     final Map<String, List<dynamic>> dropOptionsDatosMPIPS =
         catalogosProvider.getCatalogo('MP');
-    final String url = "${Config().baseUrl}/ObtenerValor";
+    final String url = "${Config().baseUrl}/ObtenerValores";
     const Map<String, dynamic> bodyPostBase = {
       "table": "prd_parte_det_mp",
       "limit": 10,

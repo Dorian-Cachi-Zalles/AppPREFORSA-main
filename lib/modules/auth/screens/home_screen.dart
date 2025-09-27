@@ -7,8 +7,11 @@ import 'package:control_de_calidad/core/widgets/settings_page.dart';
 import 'package:control_de_calidad/modules/ControlObservados/screens/Registro_observados.dart';
 import 'package:control_de_calidad/modules/auth/screens/EstadoRegistro.dart';
 import 'package:control_de_calidad/modules/auth/screens/Screen_login.dart';
+import 'package:control_de_calidad/modules/linea_CCM/screens/CCM.dart';
+import 'package:control_de_calidad/modules/linea_Coloracap/screens/Coloracap.dart';
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
 import 'package:control_de_calidad/modules/linea_I6/screens/preformas_ips.dart';
+import 'package:control_de_calidad/modules/linea_I9/screens/preformas_I9.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:feature_discovery/feature_discovery.dart';
@@ -141,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        'Sistema de Control de Calidad',
+                        'Sistema de Control de Linea',
                         style: TextStyle(
                           fontSize: 24.0,
                           color: Color(0xFF486581), // Color gris azulado
@@ -365,7 +368,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 1: (context) =>
                                                     const ScreenPreformasIPS(),
                                                 2: (context) =>
-                                                    const ScreenPreformasIPS(),
+                                                    const ScreenPreformasI9(),
+                                                3: (context) =>
+                                                    const ScreenColoracap(),
+                                                4: (context) =>
+                                                    const ScreenCCM(),
+
+                                                    
                                               };
 
                                               return ListTile(
