@@ -9,8 +9,8 @@ import 'package:control_de_calidad/core/widgets/dropdownformulario.dart';
 import 'package:control_de_calidad/core/widgets/textsimpleform.dart';
 import 'package:control_de_calidad/core/widgets/ventanaflotanteAPI.dart';
 import 'package:control_de_calidad/modules/ControlObservados/screens/GenericoSelector%20copy.dart';
+import 'package:control_de_calidad/modules/linea_CCM/models/DatosInicialesCCM.dart';
 import 'package:control_de_calidad/modules/linea_CCM/providers/DatosProviderCCM.dart';
-import 'package:control_de_calidad/modules/linea_I6/models/DatosIniciales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
@@ -78,15 +78,15 @@ class _ScreenDatosprincipalesCCMState extends State<ScreenDatosprincipalesCCM> {
           "orderDir": "desc",
           "lookups": [
             {
-              "tabla": "preforma",
+              "tabla": "prd_tapa",
               "campoForanea": "cod_prod_terminado",
-              "campoPrimario": "cod_preforma",
+              "campoPrimario": "cod_prd_tapa",  
               "campoMostrar": "color",
             },
             {
-              "tabla": "preforma",
+              "tabla": "prd_tapa",
               "campoForanea": "cod_prod_terminado",
-              "campoPrimario": "cod_preforma",
+              "campoPrimario": "cod_prd_tapa",
               "campoMostrar": "gramo",
             },
             {
@@ -121,8 +121,8 @@ class _ScreenDatosprincipalesCCMState extends State<ScreenDatosprincipalesCCM> {
           return {
             ...bodyPostBase, // 🔹 copia lo constante
             "filters": {
-              "linea": "INY",
-              "maquina": "I6"
+              "linea": "TAP",
+              "maquina": "C1"
               //"fecha_parte__lastweek": true
             },
           };
@@ -138,7 +138,7 @@ class _ScreenDatosprincipalesCCMState extends State<ScreenDatosprincipalesCCM> {
           };
         }
 
-        void _guardarAuto(ModeloDatosPrincipalesI6 datos) {
+        void _guardarAuto(ModeloDatosPrincipalesCCM datos) {
           final formState = _formKey.currentState;
           if (formState != null) {
             formState.save();
@@ -159,7 +159,7 @@ class _ScreenDatosprincipalesCCMState extends State<ScreenDatosprincipalesCCM> {
         }
 
         Timer? _debounce;
-        void _guardarAutoDebounce(ModeloDatosPrincipalesI6 datos) {
+        void _guardarAutoDebounce(ModeloDatosPrincipalesCCM datos) {
           if (_debounce?.isActive ?? false) _debounce!.cancel();
           _debounce = Timer(const Duration(milliseconds: 500), () {
             _guardarAuto(datos);
@@ -375,7 +375,7 @@ class _ScreenDatosprincipalesCCMState extends State<ScreenDatosprincipalesCCM> {
               ),
             ),
             bottomNavigationBar: BotonDeslizableGenericoInicial<ProviderCCM,
-                    ModeloDatosPrincipalesI6>(
+                    ModeloDatosPrincipalesCCM>(
                 colorcito: Config.colores[4]!,
                 obtenerHasError: (provider, id) {
                   final item = provider.RepoDatosPrincipales.items

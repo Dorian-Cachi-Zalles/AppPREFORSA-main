@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
 import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/core/widgets/botonguardaractualizado.dart';
@@ -464,7 +463,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
       return {
         ...bodyPostBase, // 🔹 copia lo constante
         "filters": {
-          "linea": "INY"
+          "linea": "INY",          
           //"fecha_parte__lastweek": true
         },
       };

@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:control_de_calidad/modules/auth/providers/AuthProvider.dart';
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
 import 'package:control_de_calidad/modules/auth/screens/home_screen.dart';
+import 'package:control_de_calidad/modules/linea_CCM/providers/DatosProviderCCM.dart';
 import 'package:control_de_calidad/modules/linea_Coloracap/providers/DatosProviderColora.dart';
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
 import 'package:control_de_calidad/modules/linea_I9/providers/DatosProviderPrefI9.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/providers/DatosProviderSoplado1.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -51,6 +53,9 @@ class _LoginScreenState extends State<LoginScreen> {
       final providerI6 = Provider.of<ProviderI6>(context, listen: false);
       final providerI9 = Provider.of<ProviderI9>(context, listen: false);
       final providerColora = Provider.of<ProviderColora>(context, listen: false);
+      final providerCCM = Provider.of<ProviderCCM>(context, listen: false);
+      final providerVJ1 = Provider.of<ProviderSoplado1>(context, listen: false);
+
 
       final response = await http.post(
         Uri.parse("${url.baseUrl}/login"),
@@ -65,6 +70,9 @@ class _LoginScreenState extends State<LoginScreen> {
         final datosIPS = providerI6.RepoDatosPrincipales.items[0];
         final datosI9 = providerI9.RepoDatosPrincipales.items[0];
         final datosColora = providerColora.RepoDatosPrincipales.items[0];
+        final datosCCM = providerCCM.RepoDatosPrincipales.items[0];
+        final datosVJ1 = providerVJ1.RepoDatosPrincipales.items[0];
+
 
         final actualizado = datosIPS.copyWith(
           cod_usuario: data['user']['id'],
@@ -78,11 +86,20 @@ class _LoginScreenState extends State<LoginScreen> {
           cod_usuario: data['user']['id'],
           turnoCalidad: turnoSeleccionado,
         );
-    
+        final actualizadoCCM = datosCCM.copyWith(
+          cod_usuario: data['user']['id'],
+          turnoCalidad: turnoSeleccionado,
+        );
+        final actualizadoVJ1 = datosVJ1.copyWith(
+          cod_usuario: data['user']['id'],
+          turnoCalidad: turnoSeleccionado,
+        );    
 
         providerI6.updateDatosPrincipales(1, actualizado);
         providerI9.updateDatosPrincipales(1, actualizadoI9);
         providerColora.updateDatosPrincipales(1, actualizadoColora);
+        providerCCM.updateDatosPrincipales(1, actualizadoCCM);
+        providerVJ1.updateDatosPrincipales(1, actualizadoVJ1);
 
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         await authProvider.iniciarSesion(nombreUsuario: data['user']['name']);

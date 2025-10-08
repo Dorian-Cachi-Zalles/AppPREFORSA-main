@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
+import 'package:control_de_calidad/core/widgets/botonguardaractualizado.dart';
+import 'package:control_de_calidad/core/widgets/boxformularios.dart';
+import 'package:control_de_calidad/core/widgets/titulos.dart';
 import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/core/widgets/botonguardarInicial.dart';
 import 'package:control_de_calidad/core/constants/catalogodropdowns.dart';
@@ -9,8 +12,9 @@ import 'package:control_de_calidad/core/widgets/dropdownformulario.dart';
 import 'package:control_de_calidad/core/widgets/textsimpleform.dart';
 import 'package:control_de_calidad/core/widgets/ventanaflotanteAPI.dart';
 import 'package:control_de_calidad/modules/ControlObservados/screens/GenericoSelector%20copy.dart';
-import 'package:control_de_calidad/modules/linea_CCM/providers/DatosProviderCCM.dart';
-import 'package:control_de_calidad/modules/linea_I6/models/DatosIniciales.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/models/DatosInicialesSoplado1.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/models/ExtenSoplado.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/providers/DatosProviderSoplado1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +34,7 @@ class _ScreenDatosprincipales_VJ1State extends State<ScreenDatosprincipales_VJ1>
   @override
   void initState() {
     super.initState();
-    final provider = Provider.of<ProviderCCM>(context, listen: false);
+    final provider = Provider.of<ProviderSoplado1>(context, listen: false);
     final idsProvider = Provider.of<IdsProvider>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -45,7 +49,7 @@ class _ScreenDatosprincipales_VJ1State extends State<ScreenDatosprincipales_VJ1>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProviderCCM>(
+    return Consumer<ProviderSoplado1>(
       builder: (context, provider, child) {
         if (provider.RepoDatosPrincipales.items.isEmpty) {
           return const Center(child: Text("Cargando ..."));
@@ -74,20 +78,20 @@ class _ScreenDatosprincipales_VJ1State extends State<ScreenDatosprincipales_VJ1>
         const Map<String, dynamic> bodyPostBase = {
           "table": "prd_parte_resumen",
           "limit": 20,
-          "orderBy": "fecha_parte",
+          "orderBy": "cod_parte",
           "orderDir": "desc",
           "lookups": [
             {
-              "tabla": "preforma",
+              "tabla": "prd_botella",
               "campoForanea": "cod_prod_terminado",
-              "campoPrimario": "cod_preforma",
-              "campoMostrar": "color",
+              "campoPrimario": "cod_botella",
+              "campoMostrar": "nombre",
             },
             {
-              "tabla": "preforma",
+              "tabla": "prd_botella",
               "campoForanea": "cod_prod_terminado",
-              "campoPrimario": "cod_preforma",
-              "campoMostrar": "gramo",
+              "campoPrimario": "cod_botella",
+              "campoMostrar": "molde",
             },
             {
               "tabla": "users",
@@ -102,7 +106,7 @@ class _ScreenDatosprincipales_VJ1State extends State<ScreenDatosprincipales_VJ1>
           "turno": "Turno",
           "Producto": "Producto",
           "name": "Maquinista",
-          "fecha_parte": "Fecha",
+          "fecha_parte": "Fecha",          
         };
         const Map<String, String> CamposMostrar2 = {
           "Parte": "Parte",
@@ -121,8 +125,8 @@ class _ScreenDatosprincipales_VJ1State extends State<ScreenDatosprincipales_VJ1>
           return {
             ...bodyPostBase, // 🔹 copia lo constante
             "filters": {
-              "linea": "INY",
-              "maquina": "I6"
+              "linea": "BOT",
+              "maquina": "S1"
               //"fecha_parte__lastweek": true
             },
           };
@@ -138,7 +142,7 @@ class _ScreenDatosprincipales_VJ1State extends State<ScreenDatosprincipales_VJ1>
           };
         }
 
-        void _guardarAuto(ModeloDatosPrincipalesI6 datos) {
+        void _guardarAuto(ModeloDatosPrincipalesSoplado1 datos) {
           final formState = _formKey.currentState;
           if (formState != null) {
             formState.save();
@@ -153,13 +157,13 @@ class _ScreenDatosprincipales_VJ1State extends State<ScreenDatosprincipales_VJ1>
             final updatedDatos =
                 datos.copyWithForm(formState.value, hasErrors: hasErrors);
 
-            final provider = context.read<ProviderCCM>();
+            final provider = context.read<ProviderSoplado1>();
             provider.updateDatosPrincipales(datos.id!, updatedDatos);
           }
         }
 
         Timer? _debounce;
-        void _guardarAutoDebounce(ModeloDatosPrincipalesI6 datos) {
+        void _guardarAutoDebounce(ModeloDatosPrincipalesSoplado1 datos) {
           if (_debounce?.isActive ?? false) _debounce!.cancel();
           _debounce = Timer(const Duration(milliseconds: 500), () {
             _guardarAuto(datos);
@@ -266,6 +270,122 @@ class _ScreenDatosprincipales_VJ1State extends State<ScreenDatosprincipales_VJ1>
                       numeroDeColumnas: 2,
                       filasCompletas: {3, 4, 5, 6, 7, 8, 9},
                     ),
+                    Padding(
+                  padding: const EdgeInsets.only(top: 16, left: 10, right: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        textAlign: TextAlign.center,
+                        '¿Se cuenta con datos \nde Scrap de Botellas?',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          side: const BorderSide(color: Colors.black),
+                          minimumSize: const Size(120, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: () async {
+                          final idsProvider = Provider.of<IdsProvider>(context, listen: false);
+                          int? idregistro =
+                              await idsProvider.getNumeroById(5);
+                          if (idregistro == null || idregistro == 0) return;
+
+                          provider.addExtendido(ModeloExtenSoplado(
+                            hasErrors: true,
+                            hasSend: false,
+                            cod_dpcalidad: idregistro,
+                            scrapBotellasMalaspzas: 0,
+                            scrapBotellasReventadaspzas: 0,
+                            scrapPreformaspzas: 0                            
+                          ));
+                        },
+                        child: const Text(
+                          "SI",
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Titulos(
+                  titulo: 'REGISTRO SCRAP DE BOTELLAS',
+                  tipo: 0,
+                ),
+                Consumer<ProviderSoplado1>(
+                  builder: (context, provider, _) {
+                    final datosSopladoExtendido1 = provider.RepoExteSoplado.items;
+
+                    if (datosSopladoExtendido1.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'No hay registros aún.',
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                        ),
+                      );
+                    }
+
+                    return ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: datosSopladoExtendido1.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      itemBuilder: (context, index) {
+                        final dtdatosSopladoExtendido1 = datosSopladoExtendido1[index];
+
+                        return GradientExpandableCard(
+                          idlista: dtdatosSopladoExtendido1.id,
+                          hasSend: dtdatosSopladoExtendido1.hasSend,
+                          numeroindex: (index + 1).toString(),
+                          onSwipedAction: () async {
+                            await provider.removeExtendido(
+                                dtdatosSopladoExtendido1.id!, (onUndo) {
+                              ScaffoldMessenger.of(context).clearSnackBars();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('Registro eliminado'),
+                                  action: SnackBarAction(
+                                    label: 'Deshacer',
+                                    onPressed: onUndo,
+                                  ),
+                                ),
+                              );
+                            });
+                          },
+                          titulo: 'Registro',
+                          subtitulos: const{'':'SCRAP BOT.'},
+                          expandedContent: generateExpandableContent([
+                            ['Scrap Botellas\nMalas [pzas] ', 1, "\n${dtdatosSopladoExtendido1.scrapBotellasMalaspzas.toString()}"],
+                            ['Scrap Botellas\n Reventadas [pzas] ', 1, "\n${dtdatosSopladoExtendido1.scrapBotellasReventadaspzas.toString()}"],
+                            ['Scrap Preformas\n[pzas] ', 1, "\n${dtdatosSopladoExtendido1.scrapPreformaspzas.toString()}"],                           
+                          ]),
+                          hasErrors: dtdatosSopladoExtendido1.hasErrors,
+                          onOpenModal: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditDatosSopladoExtendido1Form(
+                                  id: dtdatosSopladoExtendido1.id!,
+                                  DatosSopladoExtendido1: dtdatosSopladoExtendido1,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
                     const SizedBox(
                       height: 15,
                     ),
@@ -287,7 +407,7 @@ class _ScreenDatosprincipales_VJ1State extends State<ScreenDatosprincipales_VJ1>
                                         final Parte =
                                             item["nro_parte"].toString();
                                         final Producto =
-                                            "${item["color"] ?? ""} ${item["gramo"] ?? ""}"
+                                            "${item["nombre"] ?? ""} ${item["molde"] ?? ""}"
                                                 .trim();
                                         return {
                                           ...item, // 👈 mantiene todos los originales
@@ -345,8 +465,8 @@ class _ScreenDatosprincipales_VJ1State extends State<ScreenDatosprincipales_VJ1>
                                           final Parte =
                                               item["nro_parte"].toString();
                                           final Producto =
-                                              "${item["color"] ?? ""} ${item["gramo"] ?? ""}"
-                                                  .trim();
+                                            "${item["nombre"] ?? ""} ${item["molde"] ?? ""}"
+                                                .trim();
                                           return {
                                             ...item, // 👈 mantiene todos los originales
                                             "Parte": Parte,
@@ -374,9 +494,9 @@ class _ScreenDatosprincipales_VJ1State extends State<ScreenDatosprincipales_VJ1>
                 ),
               ),
             ),
-            bottomNavigationBar: BotonDeslizableGenericoInicial<ProviderCCM,
-                    ModeloDatosPrincipalesI6>(
-                colorcito: Config.colores[1]!,
+            bottomNavigationBar: BotonDeslizableGenericoInicial<ProviderSoplado1,
+                    ModeloDatosPrincipalesSoplado1>(
+                colorcito: Config.colores[5]!,
                 obtenerHasError: (provider, id) {
                   final item = provider.RepoDatosPrincipales.items
                       .firstWhere((e) => e.id == id);
@@ -454,4 +574,172 @@ List<Widget> buildFieldRows(
   }
 
   return rows;
+}
+
+class EditProviderDatosExtendidosSoplado1 with ChangeNotifier {
+  // Implementación del proveedor, puedes agregar lógica específica aquí
+}
+
+class EditDatosSopladoExtendido1Form extends StatefulWidget {
+  final int id;
+  final ModeloExtenSoplado DatosSopladoExtendido1;
+
+  const EditDatosSopladoExtendido1Form(
+      {required this.id, required this.DatosSopladoExtendido1, Key? key})
+      : super(key: key);
+
+  @override
+  _EditDatosSopladoExtendido1FormState createState() =>
+      _EditDatosSopladoExtendido1FormState();
+}
+
+class _EditDatosSopladoExtendido1FormState extends State<EditDatosSopladoExtendido1Form> {
+  final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
+  @override
+  void initState() {
+    super.initState();
+    // Validación inicial después de la construcción del widget
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _formKey.currentState?.saveAndValidate();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final catalogosProvider = Provider.of<CatalogosProvider>(context);
+    final Map<String, List<dynamic>> dropOptionsDatosSopladoExtendido1 =
+        catalogosProvider.getCatalogo('Colorante');
+    return ChangeNotifierProvider(
+        create: (_) => EditProviderDatosExtendidosSoplado1(),
+        child: Consumer<EditProviderDatosExtendidosSoplado1>(
+            builder: (context, provider, child) {
+          return Scaffold(
+              body: Column(children: [
+              const Titulos(titulo: "Registro de ", tipo: 0),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: FormularioGeneralDatosSopladoExtendido1(
+                    formKey: _formKey,
+                    widget: widget.DatosSopladoExtendido1,
+                    dropOptions: dropOptionsDatosSopladoExtendido1,
+                  ),
+                ),
+              ),
+            ),
+            BotonDeslizableGenerico<ProviderSoplado1, ModeloExtenSoplado>(
+              obtenerHasError: (provider, id) {
+                final item =
+                    provider.RepoExteSoplado.items.firstWhere((e) => e.id == id);
+                return item.hasErrors;
+              },
+              colorcito: Config.colores[1]!,
+              id: widget.id,
+              obtenerDatos: ({hasSend}) =>
+                  obtenerDatosActualizados(hasSend: hasSend!),
+              onUpdate: (provider, id, datos) =>
+                  provider.updateExtendido(id, datos),
+              onEnviar: (provider, id) => provider.enviarDatosAPIExtendido(id),
+            )
+          ]));
+        }));
+  }
+
+  ModeloExtenSoplado obtenerDatosActualizados({bool hasSend = false}) {
+    _formKey.currentState?.save();
+    final values = _formKey.currentState!.value;
+
+    final hasErrors =
+        _formKey.currentState?.fields.values.any((field) => field.hasError) ??
+            false;
+
+    return widget.DatosSopladoExtendido1.copyWithForm(
+      values,
+      hasSend: hasSend,
+      hasErrors: hasErrors,
+    );
+  }
+}
+
+class FormularioGeneralDatosSopladoExtendido1 extends StatefulWidget {
+  const FormularioGeneralDatosSopladoExtendido1({
+    super.key,
+    required GlobalKey<FormBuilderState> formKey,
+    required this.widget,
+    required this.dropOptions,
+  }) : _formKey = formKey;
+
+  final GlobalKey<FormBuilderState> _formKey;
+  final ModeloExtenSoplado widget;
+  final Map<String, List<dynamic>> dropOptions;
+
+  @override
+  State<FormularioGeneralDatosSopladoExtendido1> createState() =>
+      _FormularioGeneralDatosSopladoExtendido1State();
+}
+
+class _FormularioGeneralDatosSopladoExtendido1State
+    extends State<FormularioGeneralDatosSopladoExtendido1> {
+  @override
+  Widget build(BuildContext context) {
+    void _guardarAuto(ModeloExtenSoplado datos) {
+      final formState = widget._formKey.currentState;
+      if (formState != null) {
+        formState.save();
+        final hasErrors = widget._formKey.currentState?.fields.values
+                .any((field) => field.hasError) ??
+            false;
+        final values = formState.value;
+        final updatedDatos = datos.copyWithForm(values, hasErrors: hasErrors);
+        final provider = context.read<ProviderSoplado1>();
+        provider.updateExtendido(datos.id!, updatedDatos);
+      }
+    }
+
+    Timer? _debounce;
+    void _guardarAutoDebounce(ModeloExtenSoplado datos) {
+      if (_debounce?.isActive ?? false) _debounce!.cancel();
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        _guardarAuto(datos);
+      });
+    }
+
+    return FormBuilder(
+      key: widget._formKey,
+      child: Column(children: [      
+        CustomInputField(
+          name: 'scrapBotellasMalaspzas',
+          onChanged: (value) {
+            _guardarAutoDebounce(widget.widget);
+          },
+          label: 'Scrap Botellas Malas [pzas]',
+          isNumeric: false,
+          isRequired: true,
+          valorInicial: widget.widget.scrapBotellasMalaspzas.toString(),
+        ),
+        CustomInputField(
+          name: 'scrapBotellasReventadaspzas',
+          onChanged: (value) {
+            _guardarAutoDebounce(widget.widget);
+          },
+          label: 'Scrap Botellas Reventadas [pzas]',
+          isNumeric: false,
+          isRequired: true,
+          valorInicial: widget.widget.scrapBotellasReventadaspzas.toString(),
+        ),
+        CustomInputField(
+          name: 'scrapPreformaspzas',
+          onChanged: (value) {
+            _guardarAutoDebounce(widget.widget);
+          },
+          label: 'Scrap Preformas [pzas]',
+          isNumeric: false,
+          isRequired: true,
+          valorInicial: widget.widget.scrapPreformaspzas.toString(),
+        ),
+        
+      ]),
+    );
+  }
 }

@@ -12,6 +12,7 @@ import 'package:control_de_calidad/modules/linea_Coloracap/screens/Coloracap.dar
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
 import 'package:control_de_calidad/modules/linea_I6/screens/preformas_ips.dart';
 import 'package:control_de_calidad/modules/linea_I9/screens/preformas_I9.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/screens/Soplado1.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:feature_discovery/feature_discovery.dart';
@@ -373,6 +374,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     const ScreenColoracap(),
                                                 4: (context) =>
                                                     const ScreenCCM(),
+                                                5:(context) =>
+                                                    const ScreenPreformasSoplado1(),
 
                                                     
                                               };

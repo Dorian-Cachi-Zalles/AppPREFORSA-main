@@ -228,10 +228,12 @@ class _ScreenEstadoRegistrosState extends State<ScreenEstadoRegistros> {
                                       await providerregistro.createRegistroColora(); 
                                   break;
                                 case 3:
-                                  messageId = 40;
+                                  messageId =
+                                      await providerregistro.createRegistroCCM(); 
                                   break;
                                 case 4:
-                                  messageId = 50;
+                                 messageId =
+                                      await providerregistro.createRegistroSoplado1();
                                   break;
                                 case 5:
                                   messageId = 60;

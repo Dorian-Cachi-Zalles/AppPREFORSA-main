@@ -31,21 +31,28 @@ class ScreenListDatosDEFCCM extends StatelessWidget {
      const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa",
           "campoMostrar": "color",
         },
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa",
           "campoMostrar": "gramo"
-        }
+        },
+        {
+          "tabla": "prd_tapa",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_tapa",
+          "campoMostrar": "molde"
+        },
+
       ]
     };
      const Map<String, String> CamposMostrar = {
@@ -277,7 +284,7 @@ class ScreenListDatosDEFCCM extends StatelessWidget {
       bottomNavigationBar: BotonAgregar(
         colorcito: Config.colores[4]!,
         onPressed: () async {
-          int? idregistro = await providerregistro.getNumeroById(1);
+          int? idregistro = await providerregistro.getNumeroById(4);
 
           if (idregistro == null || idregistro == 0) {
             return; // Detiene la ejecución si el idregistro es 0 o null
@@ -414,21 +421,28 @@ class _EditDatosDEFIPSFormState extends State<EditDatosDEFIPSForm> {
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+       "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa",
           "campoMostrar": "color",
         },
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa",
           "campoMostrar": "gramo"
-        }
+        },
+        {
+          "tabla": "prd_tapa",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_tapa",
+          "campoMostrar": "molde"
+        },
+
       ]
     };
     const Map<String, String> CamposMostrar2 = {

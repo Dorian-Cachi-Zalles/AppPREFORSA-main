@@ -79,7 +79,7 @@ class _ScreenDatosprincipalesi6State extends State<ScreenDatosprincipalesi6> {
         const Map<String, dynamic> bodyPostBase = {
           "table": "prd_parte_resumen",
           "limit": 20,
-          "orderBy": "fecha_parte",
+          "orderBy": "cod_parte",
           "orderDir": "desc",
           "lookups": [
             {

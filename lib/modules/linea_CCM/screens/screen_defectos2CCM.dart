@@ -11,6 +11,7 @@ import 'package:control_de_calidad/modules/linea_CCM/providers/DatosProviderCCM.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
 
@@ -75,17 +76,17 @@ class ScreenListDatosDef2CCM extends StatelessWidget {
                             },
                              subtitulos: {},
                             expandedContent: generateExpandableContent([
-                              ['MaxDistrColor: ', 1,  dtdatosproceips.MaxDistrColor],
-                        ['PtsNegroPeq: ', 1,  dtdatosproceips.PtsNegroPeq],
-                        ['PtsNegroMed: ', 1,  dtdatosproceips.PtsNegroMed],
-                        ['Puntuacion_0: ', 1,  dtdatosproceips.Puntuacion_0],
-                        ['Puntuacion_1: ', 1,  dtdatosproceips.Puntuacion_1],
-                        ['Excentricidad: ', 1,  dtdatosproceips.Excentricidad],
-                        ['DistIntMax: ', 1,  dtdatosproceips.DistIntMax],
-                        ['DistExtMax: ', 1,  dtdatosproceips.DistExtMax],
-                        ['Puntuacion_2: ', 1,  dtdatosproceips.Puntuacion_2],
-                        ['Puntuacion_3: ', 1,  dtdatosproceips.Puntuacion_3],
-                        ['AmplBandaBrill: ', 1,  dtdatosproceips.AmplBandaBrill],
+                              ['MaxDistrColor: ', 1,  dtdatosproceips.MaxDistrColor.toString()],
+                        ['PtsNegroPeq: ', 1,  dtdatosproceips.PtsNegroPeq.toString()],
+                        ['PtsNegroMed: ', 1,  dtdatosproceips.PtsNegroMed.toString()],
+                        ['Puntuacion_0: ', 1,  dtdatosproceips.Puntuacion_0.toString()],
+                        ['Puntuacion_1: ', 1,  dtdatosproceips.Puntuacion_1.toString()],
+                        ['Excentricidad: ', 1,  dtdatosproceips.Excentricidad.toString()],
+                        ['DistIntMax: ', 1,  dtdatosproceips.DistIntMax.toString()],
+                        ['DistExtMax: ', 1,  dtdatosproceips.DistExtMax.toString()],
+                        ['Puntuacion_2: ', 1,  dtdatosproceips.Puntuacion_2.toString()],
+                        ['Puntuacion_3: ', 1,  dtdatosproceips.Puntuacion_3.toString()],
+                        ['AmplBandaBrill: ', 1,  dtdatosproceips.AmplBandaBrill.toString()],
                             ]),
                             hasErrors: dtdatosproceips.hasErrors,
                             hasSend: dtdatosproceips.hasSend,                           
@@ -115,7 +116,7 @@ class ScreenListDatosDef2CCM extends StatelessWidget {
       bottomNavigationBar: BotonAgregar(
         colorcito: Config.colores[4]!,
         onPressed: () async {
-          int? cod_dpcalidad = await providerregistro.getNumeroById(3);
+          int? cod_dpcalidad = await providerregistro.getNumeroById(4);
 
           if (cod_dpcalidad == null || cod_dpcalidad == 0) {
             return; // Detiene la ejecución si el cod_dpcalidad es 0 o null
@@ -123,6 +124,7 @@ class ScreenListDatosDef2CCM extends StatelessWidget {
           provider.addDatosCcmDef2(ModeloDatosCcmDef2(
             hasErrors: true,
             hasSend: false,
+            hora: DateFormat('HH:mm').format(DateTime.now()),
             cod_dpcalidad: cod_dpcalidad,
             MaxDistrColor: 0,
             PtsNegroPeq: 0,
@@ -271,7 +273,12 @@ class _FormularioGeneralDatosPROCEIPSState
 
     return FormBuilder(
       key: widget._formKey,
-      child: Column(children: [       
+      child: Column(children: [
+         CustomInputFieldMM(
+            name: 'hora',
+            label: 'Hora',
+            valorInicial: widget.widget.hora,
+          ),    
          CustomInputField(
           name: 'AmplBandaBrill',
           onChanged: (value) {

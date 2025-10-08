@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class WidgetAtributosNCI6 extends StatefulWidget {
+class WidgetAtributosNCSoplado extends StatefulWidget {
   final List<String> defectosIdentificados; // variables
   final List<String> otros; // constantes
   final ValueChanged<Map<String, dynamic>> onSelected;
@@ -17,7 +17,7 @@ class WidgetAtributosNCI6 extends StatefulWidget {
   /// Valores iniciales para persistencia
   final Map<String, dynamic>? initialValue;
 
-  const WidgetAtributosNCI6({
+  const WidgetAtributosNCSoplado({
     super.key,
     required this.defectosIdentificados,
     required this.otros,
@@ -28,10 +28,10 @@ class WidgetAtributosNCI6 extends StatefulWidget {
   });
 
   @override
-  State<WidgetAtributosNCI6> createState() => _WidgetAtributosNCI6State();
+  State<WidgetAtributosNCSoplado> createState() => _WidgetAtributosNCSopladoState();
 }
 
-class _WidgetAtributosNCI6State extends State<WidgetAtributosNCI6> {
+class _WidgetAtributosNCSopladoState extends State<WidgetAtributosNCSoplado> {
   Map<String, dynamic>? _selected;
   Future<void> _showDialog() async {
     Map<String, dynamic>? result = await showDialog<Map<String, dynamic>>(

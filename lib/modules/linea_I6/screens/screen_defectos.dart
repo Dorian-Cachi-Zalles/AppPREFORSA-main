@@ -31,7 +31,7 @@ class ScreenListDatosDEFIPS extends StatelessWidget {
      const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
@@ -414,7 +414,7 @@ class _EditDatosDEFIPSFormState extends State<EditDatosDEFIPSForm> {
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
@@ -600,12 +600,7 @@ class _EditDatosDEFIPSFormState extends State<EditDatosDEFIPSForm> {
                                                         _datos.cod_producto),
                                                     camposMostrar:
                                                         CamposMostrar,
-                                                    transformador: (item) {
-                                                      final v1 = toNum(item[
-                                                          "peso_embalaje"]);
-                                                      final v2 = toNum(
-                                                          item["peso_neto"]);
-                                                      final total = v1 + v2;
+                                                    transformador: (item) {                                                      
                                                       final pa =
                                                           item["pa"].toString();
                                                       final Producto =
@@ -614,7 +609,6 @@ class _EditDatosDEFIPSFormState extends State<EditDatosDEFIPSForm> {
 
                                                       return {
                                                         ...item, // 👈 mantiene todos los originales
-                                                        "total": total,
                                                         "pa": pa,
                                                         "Producto": Producto
                                                       };

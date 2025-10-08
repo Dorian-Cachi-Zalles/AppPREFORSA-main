@@ -1,5 +1,5 @@
     
-class Modelo_MP_soplado {
+class Modelo_mp_soplado {
   final int? id;
   final bool hasErrors;
   final bool hasSend;
@@ -7,10 +7,11 @@ class Modelo_MP_soplado {
   final int cod_materia_prima;
   final String lote;
   final String tonalidad;
+  final String? observaciones;
   final bool conformidad;
   final bool isConcatenado;
 
-  const Modelo_MP_soplado({
+  const Modelo_mp_soplado({
     this.id,
     required this.hasErrors,
     required this.hasSend,
@@ -18,12 +19,12 @@ class Modelo_MP_soplado {
     required this.cod_materia_prima,
     required this.lote,
     required this.tonalidad,
+    required this.observaciones,
     required this.conformidad,
-    required this.isConcatenado,
-  });
+  required this.isConcatenado});
 
-  factory Modelo_MP_soplado.fromMap(Map<String, dynamic> map) {
-    return Modelo_MP_soplado(
+  factory Modelo_mp_soplado.fromMap(Map<String, dynamic> map) {
+    return Modelo_mp_soplado(
       id: map['id'] as int?,
       hasErrors: map['hasErrors'] == 1,
       hasSend: map['hasSend'] == 1,
@@ -31,13 +32,14 @@ class Modelo_MP_soplado {
       cod_materia_prima: map['cod_materia_prima'] as int,
       lote: map['lote'] as String,
       tonalidad: map['tonalidad'] as String,
-      conformidad: map['conformida'] ==1,
-      isConcatenado: map['isConcatenado']==1,
+      observaciones: map['observaciones'] as String?,
+      conformidad: (map['conformidad'] as int) == 1,
+      isConcatenado: (map['isConcatenado'] as int) == 1
     );
   }
 
-   Modelo_MP_soplado copyWithForm(Map<String, dynamic> formValues, {bool? hasSend, bool? hasErrors}) {
-    return Modelo_MP_soplado(
+   Modelo_mp_soplado copyWithForm(Map<String, dynamic> formValues, {bool? hasSend, bool? hasErrors}) {
+    return Modelo_mp_soplado(
       id: id,
       hasErrors: hasErrors ?? this.hasErrors,
       hasSend: hasSend ?? this.hasSend,
@@ -45,8 +47,9 @@ class Modelo_MP_soplado {
       cod_materia_prima: _toInt(formValues['cod_materia_prima']),
     lote: _toString(formValues['lote']),
     tonalidad: _toString(formValues['tonalidad']),
-    conformidad: conformidad,
-    isConcatenado: isConcatenado
+observaciones: _toString(formValues['observaciones']).trim(),
+    conformidad: (formValues['conformidad'] ?? conformidad),
+    isConcatenado: isConcatenado,
     );
   }
 
@@ -56,7 +59,8 @@ class Modelo_MP_soplado {
     if (v is String) return int.tryParse(v) ?? 0;
     return 0;
   }
-   
+  
+
   Map<String, dynamic> toMap() {
     return {
       if (id != null) 'id': id,
@@ -66,20 +70,21 @@ class Modelo_MP_soplado {
       'cod_materia_prima': cod_materia_prima,
       'lote': lote,
       'tonalidad': tonalidad,
-      'conformidad': conformidad
+      'observaciones': observaciones,
+      'conformidad': conformidad ? 1 : 0,
+      'isConcatenado': isConcatenado
     };
   }
 
-  Modelo_MP_soplado copyWith({
+  Modelo_mp_soplado copyWith({
     int? id,
     bool? hasErrors,
     bool? hasSend,
     int? cod_dpcalidad,
-    int? cod_materia_prima, String? lote, String? tonalidad,
-    bool? conformidad,
-    bool? isConcatenado,
+     bool? isConcatenado,
+    int? cod_materia_prima, String? lote, String? tonalidad, String? observaciones, bool? conformidad
   }) {
-    return Modelo_MP_soplado(
+    return Modelo_mp_soplado(
       id: id ?? this.id,
       hasErrors: hasErrors ?? this.hasErrors,
       hasSend: hasSend ?? this.hasSend,
@@ -87,22 +92,23 @@ class Modelo_MP_soplado {
       cod_materia_prima: cod_materia_prima ?? this.cod_materia_prima,
       lote: lote ?? this.lote,
       tonalidad: tonalidad ?? this.tonalidad,
+      observaciones: observaciones ?? this.observaciones,
       conformidad: conformidad ?? this.conformidad,
-      isConcatenado: isConcatenado ?? this.isConcatenado,
+      isConcatenado: isConcatenado ?? this.isConcatenado
     );
   }
 }
 
 
-extension Modelo_MP_sopladoApi on Modelo_MP_soplado {
+extension Modelo_mp_sopladoApi on Modelo_mp_soplado {
   Map<String, dynamic> toJsonAPI() {
     return {
-      "ID_regis": cod_dpcalidad,
+      "cod_dpcalidad": cod_dpcalidad,
       "cod_materia_prima": cod_materia_prima,
       "lote": lote,
       "tonalidad": tonalidad,
-      "conformidad": conformidad,
-      "isConcatenada": isConcatenado,
+      "observaciones": observaciones,
+      "conformidad": conformidad
     };
   }
 }

@@ -11,19 +11,18 @@ class Config {
   
   //final String baseUrl = "http://192.168.137.105:8080/api";
 
-  final String baseUrl = "http://192.168.0.13:8080/api";
+  //final String baseUrl = "http://13.58.50.18/api";
 
-  //final String baseUrl = "http://18.223.111.43/api";
-
-
+  final String baseUrl = "http://192.168.0.9:8080/api";
   
 
   final List<String> _numeroLineas = [
     'prueba',
     'ControlCalidad',
     'crear-dos',
-    'I6',
-    'Coloracap'
+    'IPS',
+    'Coloracap',
+    'Soplado'
   ];
 
   final Map<int, Map<int, String>> _endpoints = {
@@ -47,6 +46,10 @@ class Config {
     },
     4:{
       1: '/def_2',
+      2: '/def_3',
+    },
+    5:{
+      1: '/mp_soplado',
       2: '/def_3',
     }
 
@@ -86,9 +89,10 @@ class Config {
     1: Color.alphaBlend(Colors.white.withOpacity(0.5), Colors.blueAccent[100]!),
     //2: Colors.green[200]!,
     2: const Color.fromARGB(255, 236, 236, 189),
-    3:Color.alphaBlend(Colors.white.withOpacity(0.5),Color.fromARGB(255, 255, 188, 188)),
-    4: Color.alphaBlend(Colors.white.withOpacity(0.5),const Color.fromARGB(255, 212, 180, 255)),
-    
+    3: Color.alphaBlend(Colors.white.withOpacity(0.5), const Color.fromARGB(255, 243, 90, 90)),
+    4:Color.alphaBlend(Colors.white.withOpacity(0.5), const Color.fromARGB(255, 108, 27, 248),),
+    5:Color.alphaBlend(Colors.white.withOpacity(0.5), const Color.fromARGB(255, 224, 234, 255),),
+   
     
   };
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class WidgetAtributosNCI6 extends StatefulWidget {
+class WidgetAtributosNCCCM extends StatefulWidget {
   final List<String> defectosIdentificados; // variables
   final List<String> otros; // constantes
   final ValueChanged<Map<String, dynamic>> onSelected;
@@ -17,7 +17,7 @@ class WidgetAtributosNCI6 extends StatefulWidget {
   /// Valores iniciales para persistencia
   final Map<String, dynamic>? initialValue;
 
-  const WidgetAtributosNCI6({
+  const WidgetAtributosNCCCM({
     super.key,
     required this.defectosIdentificados,
     required this.otros,
@@ -28,10 +28,10 @@ class WidgetAtributosNCI6 extends StatefulWidget {
   });
 
   @override
-  State<WidgetAtributosNCI6> createState() => _WidgetAtributosNCI6State();
+  State<WidgetAtributosNCCCM> createState() => _WidgetAtributosNCCCMState();
 }
 
-class _WidgetAtributosNCI6State extends State<WidgetAtributosNCI6> {
+class _WidgetAtributosNCCCMState extends State<WidgetAtributosNCCCM> {
   Map<String, dynamic>? _selected;
   Future<void> _showDialog() async {
     Map<String, dynamic>? result = await showDialog<Map<String, dynamic>>(
@@ -281,16 +281,16 @@ class _WidgetAtributosNCI6State extends State<WidgetAtributosNCI6> {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () => Navigator.pop(dialogContext),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            side: BorderSide(color: Colors.black),
+                          ),
                           child: Text(
                             "Cancelar",
                             style: GoogleFonts.quicksand(
                               color: Colors.black, // verde oscuro
                               fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            side: BorderSide(color: Colors.black),
                           ),
                         ),
                       ),

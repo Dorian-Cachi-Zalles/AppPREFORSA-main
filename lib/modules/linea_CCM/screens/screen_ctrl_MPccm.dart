@@ -13,8 +13,8 @@ import 'package:control_de_calidad/core/widgets/titulos.dart';
 import 'package:control_de_calidad/core/widgets/ventanaflotanteAPI.dart';
 import 'package:control_de_calidad/modules/ControlObservados/screens/GenericoSelector%20copy.dart';
 import 'package:control_de_calidad/modules/linea_CCM/models/ColoranteCCM.dart';
+import 'package:control_de_calidad/modules/linea_CCM/models/MateriaPrimaCCM.dart';
 import 'package:control_de_calidad/modules/linea_CCM/providers/DatosProviderCCM.dart';
-import 'package:control_de_calidad/modules/linea_I6/models/MateriaPrima.dart';  
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
@@ -103,9 +103,9 @@ class _ScreenListDatosMPCCMState extends State<ScreenListDatosMPCCM> {
                     children: [
                       const Text(
                         textAlign: TextAlign.center,
-                        '¿Se tiene una mezcla con \ncolorante o aditivo?',
+                        'Aprete el boton \npara agregar Un Colorante',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.bold,  
                           fontSize: 18,
                         ),
                       ),
@@ -122,7 +122,7 @@ class _ScreenListDatosMPCCMState extends State<ScreenListDatosMPCCM> {
                         ),
                         onPressed: () async {
                           int? idregistro =
-                              await providerregistro.getNumeroById(1);
+                              await providerregistro.getNumeroById(4);
                           if (idregistro == null || idregistro == 0) return;
 
                           provider.addColorante(ModeloColoranteCCM(
@@ -136,10 +136,7 @@ class _ScreenListDatosMPCCMState extends State<ScreenListDatosMPCCM> {
                             cantidadBolsone: 1,
                           ));
                         },
-                        child: const Text(
-                          "SI",
-                          style: TextStyle(fontSize: 24),
-                        ),
+                        child: const Icon(Icons.add,color: Colors.black,size: 34,  )
                       ),
                     ],
                   ),
@@ -276,8 +273,7 @@ class _ScreenListDatosMPCCMState extends State<ScreenListDatosMPCCM> {
                               'Dosificacion ',
                               1,
                               dtdatosmpips.dosificacion.toString()
-                            ],
-                            ['Humedad ', 1, dtdatosmpips.humedad.toString()],
+                            ],                           
                             ['Observaciones ', 1, dtdatosmpips.observaciones],
                           ]),
                           hasErrors: dtdatosmpips.hasErrors,
@@ -330,13 +326,13 @@ class _ScreenListDatosMPCCMState extends State<ScreenListDatosMPCCM> {
       bottomNavigationBar: BotonAgregar(
         colorcito: Config.colores[4]!,
         onPressed: () async {
-          int? idregistro = await providerregistro.getNumeroById(1);
+          int? idregistro = await providerregistro.getNumeroById(4);
 
           if (idregistro == null || idregistro == 0) {
             return; // Detiene la ejecución si el idregistro es 0 o null
           }
 
-          provider.addMateriaPrima(ModeloMateriaPrima(
+          provider.addMateriaPrima(ModeloMateriaPrimaCCM(
             isConcatenado: false,
             materiaPrima: '',
             hasErrors: true,
@@ -344,8 +340,7 @@ class _ScreenListDatosMPCCMState extends State<ScreenListDatosMPCCM> {
             cod_dpcalidad: idregistro, // Ya sabemos que no es 0 ni null
             cod_resina: 0,
             dosificacion: provider.RepoMateriaPrima.items.length == 1 ? 100 : 0,
-            observaciones: '',
-            humedad: 0,
+            observaciones: '',           
             conformidad: true,
           ));
         },
@@ -380,7 +375,7 @@ class EditProviderDatosMPIPS with ChangeNotifier {
 
 class EditDatosMPIPSForm extends StatefulWidget {
   final int id;
-  final ModeloMateriaPrima datosMpIps;
+  final ModeloMateriaPrimaCCM datosMpIps;
 
   const EditDatosMPIPSForm(
       {required this.id, required this.datosMpIps, Key? key})
@@ -393,7 +388,7 @@ class EditDatosMPIPSForm extends StatefulWidget {
 class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
 
-  late ModeloMateriaPrima _datosMpIps;
+  late ModeloMateriaPrimaCCM _datosMpIps;
 
   @override
   void initState() {
@@ -461,7 +456,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
       return {
         ...bodyPostBase, // 🔹 copia lo constante
         "filters": {
-          "linea": "INY"
+          "linea": "TAP"
           //"fecha_parte__lastweek": true
         },
       };
@@ -604,7 +599,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
                 ),
               ),
             ),
-            BotonDeslizableGenerico<ProviderCCM, ModeloMateriaPrima>(
+            BotonDeslizableGenerico<ProviderCCM, ModeloMateriaPrimaCCM>(
               colorcito: Config.colores[4]!,
               obtenerHasError: (provider, id) {
                 final item = provider.RepoMateriaPrima.items
@@ -623,7 +618,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
         }));
   }
 
-  ModeloMateriaPrima obtenerDatosActualizados({bool hasSend = false}) {
+  ModeloMateriaPrimaCCM obtenerDatosActualizados({bool hasSend = false}) {
     _formKey.currentState?.save();
     final values = _formKey.currentState!.value;
 
@@ -648,7 +643,7 @@ class FormularioGeneralDatosMPIPS extends StatefulWidget {
   }) : _formKey = formKey;
 
   final GlobalKey<FormBuilderState> _formKey;
-  final ModeloMateriaPrima datosMpIps;
+  final ModeloMateriaPrimaCCM datosMpIps;
   final Map<String, List<dynamic>> dropOptions;
 
   @override
@@ -660,7 +655,7 @@ class _FormularioGeneralDatosMPIPSState
     extends State<FormularioGeneralDatosMPIPS> {
   @override
   Widget build(BuildContext context) {
-    void _guardarAuto(ModeloMateriaPrima datos) {
+    void _guardarAuto(ModeloMateriaPrimaCCM datos) {
       final formState = widget._formKey.currentState;
       if (formState != null) {
         formState.save();
@@ -675,7 +670,7 @@ class _FormularioGeneralDatosMPIPSState
     }
 
     Timer? _debounce;
-    void _guardarAutoDebounce(ModeloMateriaPrima datos) {
+    void _guardarAutoDebounce(ModeloMateriaPrimaCCM datos) {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
       _debounce = Timer(const Duration(milliseconds: 500), () {
         _guardarAuto(datos);
@@ -699,19 +694,7 @@ class _FormularioGeneralDatosMPIPSState
           isRequired: true,
           max: 100,
           min: 0,
-        ),
-        CustomInputField(
-          name: 'humedad',
-          onChanged: (value) {
-            _guardarAutoDebounce(widget.datosMpIps);
-          },
-          label: 'Humedad[%]',
-          valorInicial: widget.datosMpIps.humedad == 0
-              ? ''
-              : widget.datosMpIps.humedad.toString(),
-          isNumeric: true,
-          isRequired: true,
-        ),
+        ),       
         CheckboxSimple(
           label: 'Conformidad',
           name: 'conformidad',

@@ -3,28 +3,28 @@ import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/core/services/API_service.dart';
 import 'package:control_de_calidad/core/services/SQLlite_service.dart';
 import 'package:control_de_calidad/modules/linea_CCM/models/ColoranteCCM.dart';
+import 'package:control_de_calidad/modules/linea_CCM/models/DatosInicialesCCM.dart';
 import 'package:control_de_calidad/modules/linea_CCM/models/DefectosP_2.dart';
-import 'package:control_de_calidad/modules/linea_I6/models/DatosIniciales.dart';
+import 'package:control_de_calidad/modules/linea_CCM/models/MateriaPrimaCCM.dart';
 import 'package:control_de_calidad/modules/linea_I6/models/Defectos.dart';
-import 'package:control_de_calidad/modules/linea_I6/models/MateriaPrima.dart';
 import 'package:control_de_calidad/modules/linea_I6/models/Observados.dart';
 import 'package:control_de_calidad/modules/linea_I6/models/Peso.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-
+  
 class ProviderCCM with ChangeNotifier {
   late Database _db;
   final RepoDatosPrincipales =
-      GenericRepositoryDatosList<ModeloDatosPrincipalesI6>(
+      GenericRepositoryDatosList<ModeloDatosPrincipalesCCM>(
     tableName: 'tablaDatosPrincipales',
-    fromMap: (map) => ModeloDatosPrincipalesI6.fromMap(map),
+    fromMap: (map) => ModeloDatosPrincipalesCCM.fromMap(map),
     toMap: (d) => d.toMap(),
     copyWithId: (d, id) => d.copyWith(id: id),
   );
-  final RepoMateriaPrima = GenericRepositoryDatosList<ModeloMateriaPrima>(
+  final RepoMateriaPrima = GenericRepositoryDatosList<ModeloMateriaPrimaCCM>(
     tableName: 'tablaMateriaPrima',
-    fromMap: (map) => ModeloMateriaPrima.fromMap(map),
+    fromMap: (map) => ModeloMateriaPrimaCCM.fromMap(map),
     toMap: (d) => d.toMap(),
     copyWithId: (d, id) => d.copyWith(id: id),
   );
@@ -123,8 +123,7 @@ class ProviderCCM with ChangeNotifier {
         cod_dpcalidad INTEGER NOT NULL,
         materiaPrima TEXT NOT NULL,       
         dosificacion REAL NOT NULL,
-        cod_resina INTEGER NOT NULL,
-        humedad REAL NOT NULL,
+        cod_resina INTEGER NOT NULL,      
         conformidad INTEGER NOT NULL,
         Observaciones TEXT,
         isConcatenado INTEGER NOT NULL
@@ -139,8 +138,7 @@ class ProviderCCM with ChangeNotifier {
         cod_dpcalidad INTEGER NOT NULL,
         colorante TEXT NOT NULL,
         codigo TEXT NOT NULL,
-        kl TEXT NOT NULL,
-        bp TEXT NOT NULL,
+        lote TEXT NOT NULL,        
         dosificacion REAL NOT NULL,
         cantidadBolsone INTEGER NOT NULL
       )
@@ -207,7 +205,8 @@ class ProviderCCM with ChangeNotifier {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         hasErrors INTEGER NOT NULL,
         hasSend INTEGER NOT NULL,
-        idregistro INTEGER NOT NULL,
+        cod_dpcalidad INTEGER NOT NULL,
+        hora TEXT NOT NULL,
         MaxDistrColor INTEGER NOT NULL,
         PtsNegroPeq INTEGER NOT NULL,
         PtsNegroMed INTEGER NOT NULL,
@@ -243,13 +242,13 @@ class ProviderCCM with ChangeNotifier {
   }
 
   Future<void> addDatosPrincipales() async {
-    final ModeloDatosPrincipalesI6 nuevoDato =
-        ModeloDatosPrincipalesI6.fromMap(defaultValuesDatosIniciales);
+    final ModeloDatosPrincipalesCCM nuevoDato =
+        ModeloDatosPrincipalesCCM.fromMap(defaultValuesDatosIniciales);
     await RepoDatosPrincipales.add(_db, nuevoDato);
     notifyListeners();
   }
 
-  Future<void> addMateriaPrima(ModeloMateriaPrima nuevoDato) async {
+  Future<void> addMateriaPrima(ModeloMateriaPrimaCCM nuevoDato) async {
     await RepoMateriaPrima.add(_db, nuevoDato);
     notifyListeners();
   }
@@ -281,13 +280,13 @@ class ProviderCCM with ChangeNotifier {
   }
 
   Future<void> updateDatosPrincipales(
-      int id, ModeloDatosPrincipalesI6 updatedDato) async {
+      int id, ModeloDatosPrincipalesCCM updatedDato) async {
     await RepoDatosPrincipales.update(_db, id, updatedDato);
     notifyListeners();
   }
 
   Future<void> updateMateriaPrima(
-      int id, ModeloMateriaPrima updatedDato) async {
+      int id, ModeloMateriaPrimaCCM updatedDato) async {
     await RepoMateriaPrima.update(_db, id, updatedDato);
     notifyListeners();
   }
@@ -393,7 +392,7 @@ class ProviderCCM with ChangeNotifier {
   Future<bool> ActualizarDatosPrincipales(IdsProvider idsProvider) async {
     return await ApiService.actualizarDatosiniciales(
       idsProvider: idsProvider,
-      numeroLinea: 1,
+      numeroLinea: 4,
       lista: RepoDatosPrincipales.items,
       toJsonAPI: (d) => (d).toJsonAPI(),
       endpoint: Config().getEndpoint(1, 1),

@@ -74,19 +74,19 @@ class _ScreenDatosprincipalesColoraState extends State<ScreenDatosprincipalesCol
         const Map<String, dynamic> bodyPostBase = {
           "table": "prd_parte_resumen",
           "limit": 20,
-          "orderBy": "fecha_parte",
+          "orderBy": "cod_parte",
           "orderDir": "desc",
           "lookups": [
             {
-              "tabla": "preforma",
+              "tabla": "prd_tapa_imp",
               "campoForanea": "cod_prod_terminado",
-              "campoPrimario": "cod_preforma",
+              "campoPrimario": "cod_tapa_imp",
               "campoMostrar": "color",
             },
             {
-              "tabla": "preforma",
+              "tabla": "prd_tapa_imp",
               "campoForanea": "cod_prod_terminado",
-              "campoPrimario": "cod_preforma",
+              "campoPrimario": "cod_tapa_imp",
               "campoMostrar": "gramo",
             },
             {
@@ -121,8 +121,8 @@ class _ScreenDatosprincipalesColoraState extends State<ScreenDatosprincipalesCol
           return {
             ...bodyPostBase, // 🔹 copia lo constante
             "filters": {
-              "linea": "INY",
-              "maquina": "I6"
+              "linea": "IMP",
+              "maquina": "IM1"
               //"fecha_parte__lastweek": true
             },
           };

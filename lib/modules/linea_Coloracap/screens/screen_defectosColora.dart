@@ -31,7 +31,7 @@ class ScreenListDatosDEFColora extends StatelessWidget {
      const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
@@ -415,7 +415,7 @@ class _EditDatosDEFColoraState extends State<EditDatosDEFColora> {
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {

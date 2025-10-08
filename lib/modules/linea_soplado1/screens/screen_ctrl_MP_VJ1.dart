@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:control_de_calidad/core/constants/Configuraciones.dart';
+import 'package:control_de_calidad/core/widgets/textsimpleform.dart';
 import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/core/widgets/botonguardaractualizado.dart';
 import 'package:control_de_calidad/core/constants/catalogodropdowns.dart';
@@ -7,15 +8,11 @@ import 'package:control_de_calidad/core/widgets/BotonSimple.dart';
 import 'package:control_de_calidad/core/widgets/boton_agregar.dart';
 import 'package:control_de_calidad/core/widgets/boxformularios.dart';
 import 'package:control_de_calidad/core/widgets/checkboxformulario.dart';
-import 'package:control_de_calidad/core/widgets/dropdownformulario.dart';
-import 'package:control_de_calidad/core/widgets/textsimpleform.dart';
 import 'package:control_de_calidad/core/widgets/titulos.dart';
 import 'package:control_de_calidad/core/widgets/ventanaflotanteAPI.dart';
 import 'package:control_de_calidad/modules/ControlObservados/screens/GenericoSelector%20copy.dart';
-import 'package:control_de_calidad/modules/linea_CCM/models/ColoranteCCM.dart';
-import 'package:control_de_calidad/modules/linea_I6/models/MateriaPrima.dart';
 import 'package:control_de_calidad/modules/linea_soplado1/models/cc_materia_prima_soplado.dart';
-import 'package:control_de_calidad/modules/linea_soplado1/providers/DatosProviderSoplado.dart';  
+import 'package:control_de_calidad/modules/linea_soplado1/providers/DatosProviderSoplado1.dart';  
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
@@ -38,29 +35,23 @@ class _ScreenListDatosMP_SopladoState extends State<ScreenListDatosMP_Soplado> {
       "orderDir": "desc",
       "lookups": [
         {
-          "tabla": "resina",
+          "tabla": "preforma",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "marca",
+          "campoPrimario": "cod_preforma",
+          "campoMostrar": "color",
         },
         {
-          "tabla": "resina",
+          "tabla": "preforma",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "file",
+          "campoPrimario": "cod_preforma",
+          "campoMostrar": "gramo",
         },
         {
-          "tabla": "resina",
+          "tabla": "preforma",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "codigo",
-        },
-        {
-          "tabla": "resina",
-          "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "peso_bolsa",
-        },
+          "campoPrimario": "cod_preforma",
+          "campoMostrar": "molde",
+        },        
         {
           "tabla": "prd_parte_resumen",
           "campoForanea": "cod_parte",
@@ -71,9 +62,7 @@ class _ScreenListDatosMP_SopladoState extends State<ScreenListDatosMP_Soplado> {
     };
     const Map<String, String> CamposMostrar = {
       "Parte": "Parte",
-      "marca": "Materia Prima",
-      "file": "File",
-      "peso_bolsa": "Peso",
+      "MP":"Preforma",
       "cant_bolsones": "Cantidad de Bolsones",
       "bolsones": "Bolsones Utilizados"
     };
@@ -145,7 +134,9 @@ class _ScreenListDatosMP_SopladoState extends State<ScreenListDatosMP_Soplado> {
                                 dtdatosmpips.conformidad ? ' SI' : ' NO',
                           },
                           expandedContent: generateExpandableContent([
-                           
+                            ['Lote ', 1, dtdatosmpips.lote],
+                            ['Tonalidad ', 1, dtdatosmpips.tonalidad],
+                            ['Observaciones ', 1, dtdatosmpips.observaciones],  
                           ]),
                           hasErrors: dtdatosmpips.hasErrors,
                           hasSend: dtdatosmpips.hasSend,
@@ -172,18 +163,20 @@ class _ScreenListDatosMP_SopladoState extends State<ScreenListDatosMP_Soplado> {
                                         buildBodyPost2(dtdatosmpips.cod_materia_prima),
                                     camposMostrar: CamposMostrar,
                                     transformador: (item) {
-                                      final Parte =
-                                          item["nro_parte"].toString();
-                                      return {
-                                        ...item, // 👈 mantiene todos los originales
-                                        "Parte": Parte,
-                                      };
-                                    },
-                                    titulo: "Resina seleccionada",
+                                final Parte = item["nro_parte"].toString();
+                                final String MP =
+                                    '${item['color']} ${item['gramo']} ${item['molde']}';
+                                return {
+                                  ...item, // 👈 mantiene todos los originales
+                                  "Parte": Parte,
+                                  "MP":MP,
+                                };
+                              },
+                                    titulo: "preforma seleccionada",
                                   );
                                 });
                               }),
-                          textoBoton: 'Ver resina',
+                          textoBoton: 'Ver preforma',
                         );
                       },
                     );
@@ -195,21 +188,22 @@ class _ScreenListDatosMP_SopladoState extends State<ScreenListDatosMP_Soplado> {
         ],
       ),
       bottomNavigationBar: BotonAgregar(
-        colorcito: Config.colores[1]!,
+        colorcito: Config.colores[5]!,
         onPressed: () async {
-          int? idregistro = await providerregistro.getNumeroById(1);
+          int? idregistro = await providerregistro.getNumeroById(5);
 
           if (idregistro == null || idregistro == 0) {
             return; // Detiene la ejecución si el idregistro es 0 o null
           }
 
-          provider.addMateriaPrima(Modelo_MP_soplado(
+          provider.addMateriaPrima(Modelo_mp_soplado(
             cod_materia_prima: 0,
             isConcatenado: false,
             lote: '',
             tonalidad: '', 
             hasErrors: true,
             hasSend: false,
+            observaciones: '',
             cod_dpcalidad: idregistro, // Ya sabemos que no es 0 ni null
            
                        
@@ -247,7 +241,7 @@ class EditProviderDatosMPIPS with ChangeNotifier {
 
 class EditDatosMPIPSForm extends StatefulWidget {
   final int id;
-  final Modelo_MP_soplado datosMpIps;
+  final Modelo_mp_soplado datosMpIps;
 
   const EditDatosMPIPSForm(
       {required this.id, required this.datosMpIps, Key? key})
@@ -260,7 +254,7 @@ class EditDatosMPIPSForm extends StatefulWidget {
 class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
 
-  late Modelo_MP_soplado _datosMpIps;
+  late Modelo_mp_soplado _datosMpIps;
 
   @override
   void initState() {
@@ -277,36 +271,30 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
     final Map<String, List<dynamic>> dropOptionsDatosMPIPS =
         catalogosProvider.getCatalogo('MP');
     final String url = "${Config().baseUrl}/ObtenerValores";
-    const Map<String, dynamic> bodyPostBase = {
+   const Map<String, dynamic> bodyPostBase = {
       "table": "prd_parte_det_mp",
       "limit": 10,
       "orderBy": "cod_det_mp",
       "orderDir": "desc",
       "lookups": [
         {
-          "tabla": "resina",
+          "tabla": "preforma",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "marca",
+          "campoPrimario": "cod_preforma",
+          "campoMostrar": "color",
         },
         {
-          "tabla": "resina",
+          "tabla": "preforma",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "file",
+          "campoPrimario": "cod_preforma",
+          "campoMostrar": "gramo",
         },
         {
-          "tabla": "resina",
+          "tabla": "preforma",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "codigo",
-        },
-        {
-          "tabla": "resina",
-          "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "peso_bolsa",
-        },
+          "campoPrimario": "cod_preforma",
+          "campoMostrar": "molde",
+        },        
         {
           "tabla": "prd_parte_resumen",
           "campoForanea": "cod_parte",
@@ -317,9 +305,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
     };
     const Map<String, String> CamposMostrar = {
       "Parte": "Parte",
-      "marca": "Materia Prima",
-      "file": "File",
-      "peso_bolsa": "Peso",
+      "Producto": "Producto",
       "cant_bolsones": "Cantidad de Bolsones",
       "bolsones": "Bolsones Utilizados"
     };
@@ -328,7 +314,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
       return {
         ...bodyPostBase, // 🔹 copia lo constante
         "filters": {
-          "linea": "INY"
+          "linea": "BOT"
           //"fecha_parte__lastweek": true
         },
       };
@@ -360,7 +346,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
                 ? Align(
                     alignment: Alignment.bottomCenter,
                     child: BotonSimple(
-                      texto: "CONCATENAR CON RESINA",
+                      texto: "CONCATENAR CON preforma",
                       colorBoton: Colors.orangeAccent.shade700,
                       icono: Icons.content_paste_go_sharp,
                       onPressed: () => Navigator.push(
@@ -373,24 +359,26 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
                               multiple: false,
                               campoId: "cod_det_mp",
                               camposMostrar: CamposMostrar,
-                              camposImpo: const ['marca', 'file'],
+                              camposImpo: const ['color','gramo','molde'],
                               transformador: (item) {
                                 final Parte = item["nro_parte"].toString();
+                                final Producto =
+                                            "${item["color"] ?? ""} ${item["gramo"] ?? ""} ${item["molde"] ?? ""}"
+                                                .trim();
                                 return {
                                   ...item, // 👈 mantiene todos los originales
                                   "Parte": Parte,
+                                  "Producto":Producto,
                                 };
                               },
                               titulo: const Expanded(
                                   child: Text(
-                                      'SELECCIONE LA RESINA Y PRESIONE OK')),
+                                      'SELECCIONE LA preforma Y PRESIONE OK')),
                               onPress: (idSeleccionado, idsSeleccionados,
-                                  camposImpoSeleccionados) {
-                                final String MP =
-                                    '${camposImpoSeleccionados['marca']}';
+                                  camposImpoSeleccionados) {                                
                                 final actualizarEstado = _datosMpIps.copyWith(
                                     isConcatenado: true,
-                                    cod_materia_prima: idSeleccionado,
+                                    cod_materia_prima: idSeleccionado,                                    
                                     );
                                 ProviderSoplado1ProviderSoplado1.updateMateriaPrima(
                                     _datosMpIps.id!, actualizarEstado);
@@ -417,7 +405,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
                 : Align(
                     alignment: Alignment.bottomCenter,
                     child: BotonSimple(
-                      texto: "VER RESINA SELECIONADA",
+                      texto: "VER preforma SELECIONADA",
                       colorBoton: Colors.blue[900]!,
                       icono: Icons.panorama_horizontal_sharp,
                       onPressed: () => showDialog(
@@ -429,14 +417,17 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
                                 bodyPost:
                                     buildBodyPost2(_datosMpIps.cod_materia_prima),
                                 camposMostrar: CamposMostrar,
-                                titulo: "Resina seleccionada",
+                                titulo: "preforma seleccionada",
                                 transformador: (item) {
-                                  final Parte = item["nro_parte"].toString();
-                                  return {
-                                    ...item, // 👈 mantiene todos los originales
-                                    "Parte": Parte,
-                                  };
-                                },
+                                final Parte = item["nro_parte"].toString();
+                                final String MP =
+                                    '${item['color']} ${item['gramo']} ${item['molde']}';
+                                return {
+                                  ...item, // 👈 mantiene todos los originales
+                                  "Parte": Parte,
+                                  "MP":MP,
+                                };
+                              },
                                 onPress: () {
                                   final actualizarEstado = _datosMpIps.copyWith(
                                     isConcatenado: false,
@@ -471,8 +462,8 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
                 ),
               ),
             ),
-            BotonDeslizableGenerico<ProviderSoplado1, Modelo_MP_soplado>(
-              colorcito: Config.colores[1]!,
+            BotonDeslizableGenerico<ProviderSoplado1, Modelo_mp_soplado>(
+              colorcito: Config.colores[5]!,
               obtenerHasError: (provider, id) {
                 final item = provider.RepoMateriaPrima.items
                     .firstWhere((e) => e.id == id);
@@ -490,7 +481,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
         }));
   }
 
-  Modelo_MP_soplado obtenerDatosActualizados({bool hasSend = false}) {
+  Modelo_mp_soplado obtenerDatosActualizados({bool hasSend = false}) {
     _formKey.currentState?.save();
     final values = _formKey.currentState!.value;
 
@@ -515,7 +506,7 @@ class FormularioGeneralDatosMPIPS extends StatefulWidget {
   }) : _formKey = formKey;
 
   final GlobalKey<FormBuilderState> _formKey;
-  final Modelo_MP_soplado datosMpIps;
+  final Modelo_mp_soplado datosMpIps;
   final Map<String, List<dynamic>> dropOptions;
 
   @override
@@ -527,7 +518,7 @@ class _FormularioGeneralDatosMPIPSState
     extends State<FormularioGeneralDatosMPIPS> {
   @override
   Widget build(BuildContext context) {
-    void _guardarAuto(Modelo_MP_soplado datos) {
+    void _guardarAuto(Modelo_mp_soplado datos) {
       final formState = widget._formKey.currentState;
       if (formState != null) {
         formState.save();
@@ -542,7 +533,7 @@ class _FormularioGeneralDatosMPIPSState
     }
 
     Timer? _debounce;
-    void _guardarAutoDebounce(Modelo_MP_soplado datos) {
+    void _guardarAutoDebounce(Modelo_mp_soplado datos) {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
       _debounce = Timer(const Duration(milliseconds: 500), () {
         _guardarAuto(datos);
@@ -552,7 +543,27 @@ class _FormularioGeneralDatosMPIPSState
     return FormBuilder(
       key: widget._formKey,
       autovalidateMode: AutovalidateMode.disabled,
-      child: Column(children: [         
+      child: Column(children: [  
+        CustomInputField(
+          name: 'lote',
+          onChanged: (value) {
+            _guardarAutoDebounce(widget.datosMpIps);
+          },
+          label: 'Lote',
+          isRequired: true,
+          isNumeric: false,
+          valorInicial: widget.datosMpIps.lote, 
+        ),
+        CustomInputField(
+          name: 'tonalidad',
+          onChanged: (value) {
+            _guardarAutoDebounce(widget.datosMpIps);
+          },
+          label: 'Tonalidad',
+          isRequired: true,
+          isNumeric: false,
+          valorInicial: widget.datosMpIps.tonalidad, 
+        ),
         CheckboxSimple(
           label: 'Conformidad',
           name: 'conformidad',
@@ -561,6 +572,17 @@ class _FormularioGeneralDatosMPIPSState
             _guardarAuto(widget.datosMpIps);
           },
         ),
+        CustomInputField(
+          name: 'observaciones',
+          onChanged: (value) {
+            _guardarAutoDebounce(widget.datosMpIps);
+          },
+          label: 'Observaciones',
+          isRequired: false,
+          isNumeric: false,
+          valorInicial: widget.datosMpIps.observaciones, 
+        ),
+        
        
       ]),
     );

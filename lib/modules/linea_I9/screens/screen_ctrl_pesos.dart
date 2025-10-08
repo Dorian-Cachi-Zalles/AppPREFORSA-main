@@ -28,7 +28,7 @@ class ScreenListDatosPESOSI9 extends StatelessWidget {
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
@@ -123,6 +123,7 @@ class ScreenListDatosPESOSI9 extends StatelessWidget {
                             },
                             expandedContent: generateExpandableContent([
                               ['Conformidad ', 5, dtdatospesosips.conformidad],
+                              ['Peso Total Balanza ', 1, dtdatospesosips.peso_total_contraste.toString()],
                               [
                                 'Observaciones ',
                                 1,
@@ -266,7 +267,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
@@ -305,7 +306,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
         ...bodyPostBase, // 🔹 copia lo constante
         "filters": {
           "linea": "INY",
-          "maquina": "I6"
+          "maquina": "I9"
           //"fecha_parte__lastweek": true
         },
       };
@@ -473,7 +474,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
         _formKey.currentState?.fields.values.any((field) => field.hasError) ??
             false;
 
-    return widget.datosPESOSIPS.copyWithForm(
+    return _datos.copyWithForm(
       values,
       hasSend: hasSend,
       hasErrors: hasErrors,

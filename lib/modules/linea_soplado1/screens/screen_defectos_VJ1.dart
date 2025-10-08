@@ -275,9 +275,9 @@ class ScreenListDatosDEF_VJ1 extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: BotonAgregar(
-        colorcito: Config.colores[1]!,
+        colorcito: Config.colores[5]!,
         onPressed: () async {
-          int? idregistro = await providerregistro.getNumeroById(1);
+          int? idregistro = await providerregistro.getNumeroById(5);
 
           if (idregistro == null || idregistro == 0) {
             return; // Detiene la ejecución si el idregistro es 0 o null
@@ -319,12 +319,12 @@ class ScreenListDatosDEF_VJ1 extends StatelessWidget {
   }
 }
 
-class EditProviderDatosDEFIPS with ChangeNotifier {
+class EditProviderDatosDEFVJ1 with ChangeNotifier {
   bool _mostrarFormulario1;
   bool _mostrarFormulario2;
   List<String>? todasLasOpciones;
 
-  EditProviderDatosDEFIPS({
+  EditProviderDatosDEFVJ1({
     required bool mostrarInicial1,
     required bool mostrarInicial2,
     required List<String> constantes,
@@ -478,13 +478,13 @@ class _EditDatosDEFIPSFormState extends State<EditDatosDEFIPSForm> {
     final providerI6 = Provider.of<ProviderI6>(context, listen: false);
 
     return ChangeNotifierProvider(
-        create: (_) => EditProviderDatosDEFIPS(
+        create: (_) => EditProviderDatosDEFVJ1(
               mostrarInicial1: widget.datosDefIps.isObservado,
               mostrarInicial2: _datos.isConcatenado,
               constantes: opcionesnormales,
               variablesIniciales: widget.datosDefIps.defectos,
             ),
-        child: Consumer<EditProviderDatosDEFIPS>(
+        child: Consumer<EditProviderDatosDEFVJ1>(
             builder: (context, provider, child) {
           return Scaffold(
               body: Column(children: [
@@ -724,7 +724,7 @@ class _EditDatosDEFIPSFormState extends State<EditDatosDEFIPSForm> {
               ),
             ),
             BotonDeslizableConId<ProviderI6, ModeloDefectos, ModeloObservados>(
-              colorcito: Config.colores[1]!,
+              colorcito: Config.colores[5]!,
               obtenerHasError1: (provider, id) {
                 final item =
                     provider.RepoDefectos.items.firstWhere((e) => e.id == id);

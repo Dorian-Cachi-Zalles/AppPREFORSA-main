@@ -27,25 +27,37 @@ class ScreenListDatosDef3Colora extends StatelessWidget {
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa_imp",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa_imp",
           "campoMostrar": "color",
         },
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa_imp",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa_imp",
+          "campoMostrar": "tono",
+        },
+        {
+          "tabla": "prd_tapa_imp",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_tapa_imp",
           "campoMostrar": "gramo"
+        },
+        {
+          "tabla": "prd_tapa_imp",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_tapa_imp",
+          "campoMostrar": "empresa "
         }
       ]
-    };
+    };    
     const Map<String, String> CamposMostrar = {
-      "pa": "PA",
+      "pa": "PA",     
       "contenedor": "Empaque",
       "cantidad": "Cantidad",
       "peso_embalaje": "Peso Tara",
@@ -159,8 +171,9 @@ class ScreenListDatosDef3Colora extends StatelessWidget {
               final v2 = toNum(item["peso_neto"]);
               final total = v1 + v2;
               final pa = item["pa"].toString();
-              final Producto =
-                  "${item["color"] ?? ""} ${item["gramo"] ?? ""}".trim();
+               final Producto =
+                                        "${item["color"] ?? ""} ${item["tono"] ?? ""} ${item["gramo"] ?? ""} ${item["empresa"] ?? ""}"
+                                            .trim();
 
               return {
                 ...item, // mantiene todos los originales
@@ -274,29 +287,42 @@ class EditDatosDef3FormState extends State<EditDatosDef3Form> {
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa_imp",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa_imp",
           "campoMostrar": "color",
         },
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa_imp",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa_imp",
+          "campoMostrar": "tono",
+        },
+        {
+          "tabla": "prd_tapa_imp",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_tapa_imp",
           "campoMostrar": "gramo"
+        },
+        {
+          "tabla": "prd_tapa_imp",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_tapa_imp",
+          "campoMostrar": "empresa "
         }
       ]
     };
     const Map<String, String> CamposMostrarInicial = {
-      "pa": "PA",
+      "pa": "PA",      
       "contenedor": "Empaque",
       "cantidad": "Cantidad",
       "peso_embalaje": "Peso Tara",
       "peso_neto": "Peso Neto",
+      "Producto": "Producto"
     };
     const Map<String, String> CamposMostrar = {
       "pa": "PA",
@@ -312,8 +338,8 @@ class EditDatosDef3FormState extends State<EditDatosDef3Form> {
       return {
         ...bodyPostBase, // 🔹 copia lo constante
         "filters": {
-          "linea": "INY",
-          "maquina": "I6"
+          "linea": "IMP",
+          "maquina": "IM1"
           //"fecha_parte__lastweek": true
         },
       };
@@ -358,6 +384,19 @@ class EditDatosDef3FormState extends State<EditDatosDef3Form> {
                                 multiple: false,
                                 campoId: "cod_producto",
                                 camposMostrar: CamposMostrarInicial,
+                                transformador: (item) {                                  
+                                   
+                                    final pa = item["pa"].toString();
+                                    final Producto =
+                                        "${item["color"] ?? ""} ${item["tono"] ?? ""} ${item["gramo"] ?? ""} ${item["empresa"] ?? ""}"
+                                            .trim();
+
+                                    return {
+                                      ...item, // 👈 mantiene todos los originales                                      
+                                      "pa": pa,
+                                      "Producto": Producto
+                                    };
+                                  },
                                 camposImpo: const ['pa'],
                                 titulo: const Expanded(
                                     child:
@@ -411,7 +450,7 @@ class EditDatosDef3FormState extends State<EditDatosDef3Form> {
                                     final total = v1 + v2;
                                     final pa = item["pa"].toString();
                                     final Producto =
-                                        "${item["color"] ?? ""} ${item["gramo"] ?? ""}"
+                                        "${item["color"] ?? ""} ${item["tono"] ?? ""} ${item["gramo"] ?? ""} ${item["empresa"] ?? ""}"
                                             .trim();
 
                                     return {
@@ -446,7 +485,7 @@ class EditDatosDef3FormState extends State<EditDatosDef3Form> {
                   child: SingleChildScrollView(
                     child: FormularioGeneralDatosDef3(
                       formKey: _formKey,
-                      widget: widget.datosDef3,
+                      widget: _datos,
                     ),
                   ),
                 ),
@@ -479,7 +518,7 @@ class EditDatosDef3FormState extends State<EditDatosDef3Form> {
         _formKey.currentState?.fields.values.any((field) => field.hasError) ??
             false;
 
-    return widget.datosDef3.copyWithForm(
+    return _datos.copyWithForm(
       values,
       hasSend: hasSend,
       hasErrors: hasErrors,

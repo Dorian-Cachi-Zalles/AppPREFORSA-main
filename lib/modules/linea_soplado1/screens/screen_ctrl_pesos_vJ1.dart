@@ -5,13 +5,12 @@ import 'package:control_de_calidad/core/widgets/botonguardaractualizado.dart';
 import 'package:control_de_calidad/core/widgets/BotonSimple.dart';
 import 'package:control_de_calidad/core/widgets/boton_agregar.dart';
 import 'package:control_de_calidad/core/widgets/boxformularios.dart';
-import 'package:control_de_calidad/core/widgets/checkboxformulario.dart';
 import 'package:control_de_calidad/core/widgets/textsimpleform.dart';
 import 'package:control_de_calidad/core/widgets/titulos.dart';
 import 'package:control_de_calidad/core/widgets/ventanaflotanteAPI.dart';
 import 'package:control_de_calidad/modules/ControlObservados/screens/GenericoSelector%20copy.dart';
-import 'package:control_de_calidad/modules/linea_I6/models/Peso.dart';
-import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/models/cc_peso_soplado.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/providers/DatosProviderSoplado1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +21,7 @@ class ScreenListDatosPESOS_VJ1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProviderI6>(context, listen: false);
+    final provider = Provider.of<ProviderSoplado1>(context, listen: false);
     final providerregistro = Provider.of<IdsProvider>(context, listen: false);
     final String url = "${Config().baseUrl}/ObtenerValores";
     const Map<String, dynamic> bodyPostBase = {
@@ -74,7 +73,7 @@ class ScreenListDatosPESOS_VJ1 extends StatelessWidget {
                     titulo: 'REGISTROS DE PESOS',
                     tipo: 0,
                   ),
-                  Consumer<ProviderI6>(
+                  Consumer<ProviderSoplado1>(
                     builder: (context, provider, _) {
                       final datosPESOSIPS = provider.RepoPesos.items;
 
@@ -118,16 +117,13 @@ class ScreenListDatosPESOS_VJ1 extends StatelessWidget {
                               );
                             },
                             subtitulos: {
-                              'Hora ': dtdatospesosips.hora,
-                              'PA ': dtdatospesosips.pa.toString(),
+                              'Hora ': dtdatospesosips.hora,                              
                             },
                             expandedContent: generateExpandableContent([
-                              ['Conformidad ', 5, dtdatospesosips.conformidad],
-                              [
-                                'Observaciones ',
-                                1,
-                                dtdatospesosips.observaciones.toString()
-                              ],
+                              ['Cavidades ', 2, dtdatospesosips.cavidad],
+                              ['Z/superior ', 4, dtdatospesosips.Zsup],
+                              ['Z/media ', 4, dtdatospesosips.Zmed],
+                              ['Z/inferior ', 4, dtdatospesosips.Zinf],         
                             ]),
                             hasErrors: dtdatospesosips.hasErrors,
                             onOpenModal: () {
@@ -184,22 +180,22 @@ class ScreenListDatosPESOS_VJ1 extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: BotonAgregar(
-        colorcito: Config.colores[1]!,
+        colorcito: Config.colores[5]!,
         onPressed: () async {
-          int? idregistro = await providerregistro.getNumeroById(1);
+          int? idregistro = await providerregistro.getNumeroById(5);
 
           if (idregistro == null || idregistro == 0) {
             return; // Detiene la ejecución si el idregistro es 0 o null
           }
-          provider.addPesos(ModeloPesos(
+          provider.addPesos(Modelo_peso_soplado(
             hasErrors: true,
             hasSend: false,
             cod_dpcalidad: idregistro, // Ya sabemos que no es 0 ni null
             hora: DateFormat('HH:mm').format(DateTime.now()),
-            pa: '',
-            conformidad: false,
-            peso_total_contraste: 0,
-            observaciones: '',
+            cavidad:['1','2'],
+            Zinf: [0,0],
+            Zmed: [0,0],
+            Zsup: [0,0], 
             cod_producto: 0,
             isConcatenado: false,
           ));
@@ -235,7 +231,7 @@ class EditProviderDatosPESOSIPS with ChangeNotifier {
 
 class EditDatosPESOSIPSForm extends StatefulWidget {
   final int id;
-  final ModeloPesos datosPESOSIPS;
+  final Modelo_peso_soplado datosPESOSIPS;
 
   const EditDatosPESOSIPSForm(
       {required this.id, required this.datosPESOSIPS, super.key});
@@ -247,7 +243,7 @@ class EditDatosPESOSIPSForm extends StatefulWidget {
 class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
 
-  late ModeloPesos _datos;
+  late Modelo_peso_soplado _datos;
 
   @override
   void initState() {
@@ -261,7 +257,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
 
   @override
   Widget build(BuildContext context) {
-    final providerI6 = Provider.of<ProviderI6>(context, listen: false);
+    final providerSoplaProviderSoplado1 = Provider.of<ProviderSoplado1>(context, listen: false);
     final String url = "${Config().baseUrl}/ObtenerValores";
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
@@ -304,8 +300,8 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
       return {
         ...bodyPostBase, // 🔹 copia lo constante
         "filters": {
-          "linea": "INY",
-          "maquina": "I6"
+          "linea": "BOT",
+          "maquina": "B1"
           //"fecha_parte__lastweek": true
         },
       };
@@ -355,15 +351,13 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
                                     child:
                                         Text('SELECCIONE EL PA Y PRESIONE OK')),
                                 onPress: (idSeleccionado, idsSeleccionados,
-                                    camposImpoSeleccionados) {
-                                  final String paa =
-                                      camposImpoSeleccionados['pa'].toString();
+                                    camposImpoSeleccionados) {                                 
 
                                   final actualizarEstado = _datos.copyWith(
                                       isConcatenado: true,
                                       cod_producto: idSeleccionado,
-                                      pa: paa);
-                                  providerI6.updatePesos(
+                                      );
+                                  providerSoplaProviderSoplado1.updatePesos(
                                       _datos.id!, actualizarEstado);
                                   // 🔹 Aquí actualizas el cod_parte en el Provider
                                   setState(() {
@@ -421,7 +415,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
                                       isConcatenado: false,
                                       cod_producto: 0,
                                     );
-                                    providerI6.updatePesos(
+                                    providerSoplaProviderSoplado1.updatePesos(
                                         _datos.id!, actualizarEstado);
                                     provider.mostrarFalse();
                                     Navigator.pop(dialogContext);
@@ -445,13 +439,13 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
                   ),
                 ),
               ),
-              BotonDeslizableGenerico<ProviderI6, ModeloPesos>(
+              BotonDeslizableGenerico<ProviderSoplado1, Modelo_peso_soplado>(
                 obtenerHasError: (provider, id) {
                   final item =
                       provider.RepoPesos.items.firstWhere((e) => e.id == id);
                   return item.hasErrors;
                 },
-                colorcito: Config.colores[1]!,
+                colorcito: Config.colores[5]!,
                 id: widget.id,
                 obtenerDatos: ({hasSend}) =>
                     obtenerDatosActualizados(hasSend: hasSend!),
@@ -465,7 +459,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
   }
 
   // Función para obtener los datos actualizados y evitar repeticiones
-  ModeloPesos obtenerDatosActualizados({bool hasSend = false}) {
+  Modelo_peso_soplado obtenerDatosActualizados({bool hasSend = false}) {
     _formKey.currentState?.save();
     final values = _formKey.currentState!.value;
 
@@ -473,7 +467,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
         _formKey.currentState?.fields.values.any((field) => field.hasError) ??
             false;
 
-    return widget.datosPESOSIPS.copyWithForm(
+    return _datos.copyWithForm(
       values,
       hasSend: hasSend,
       hasErrors: hasErrors,
@@ -489,7 +483,7 @@ class FormularioGeneralDatosPESOSIPS extends StatefulWidget {
   }) : _formKey = formKey;
 
   final GlobalKey<FormBuilderState> _formKey;
-  final ModeloPesos widget;
+  final Modelo_peso_soplado widget;
 
   @override
   State<FormularioGeneralDatosPESOSIPS> createState() =>
@@ -500,7 +494,7 @@ class _FormularioGeneralDatosPESOSIPSState
     extends State<FormularioGeneralDatosPESOSIPS> {
   @override
   Widget build(BuildContext context) {
-    void _guardarAuto(ModeloPesos datos) {
+    void _guardarAuto(Modelo_peso_soplado datos) {
       final formState = widget._formKey.currentState;
       if (formState != null) {
         formState.save();
@@ -508,59 +502,184 @@ class _FormularioGeneralDatosPESOSIPSState
                 .any((field) => field.hasError) ??
             false;
         final values = formState.value;
-        final updatedDatos = datos.copyWithForm(values, hasErrors: hasErrors);
-        final provider = context.read<ProviderI6>();
+        final Zsup= List.generate(
+          widget.widget.Zsup.length,
+          (index) => double.tryParse(values['Zsup_$index'] ?? '0') ?? 0,
+        );
+        final Zmed= List.generate(
+          widget.widget.Zmed.length,
+          (index) => double.tryParse(values['Zmed_$index'] ?? '0') ?? 0,
+        );
+        final Zinf= List.generate(
+          widget.widget.Zinf.length,
+          (index) => double.tryParse(values['Zinf_$index'] ?? '0') ?? 0,
+        );
+        
+        final updatedDatos = datos.copyWithForm(values, hasErrors: hasErrors,Zsup: Zsup,Zmed: Zmed,Zinf: Zinf );
+        final provider = context.read<ProviderSoplado1>();
         provider.updatePesos(datos.id!, updatedDatos);
       }
     }
 
     Timer? _debounce;
-    void _guardarAutoDebounce(ModeloPesos datos) {
+    void _guardarAutoDebounce(Modelo_peso_soplado datos) {
       if (_debounce?.isActive ?? false) _debounce!.cancel();
       _debounce = Timer(const Duration(milliseconds: 500), () {
         _guardarAuto(datos);
       });
     }
 
-    return FormBuilder(
-        key: widget._formKey,
-        child: Column(children: [
-          const SizedBox(
-            height: 15,
-          ),
-          CustomInputFieldMM(
-            name: 'hora',
-            label: 'Hora',
-            valorInicial: widget.widget.hora,
-          ),
-          CustomInputField(
-            name: 'peso_total_contraste',
-            onChanged: (value) {
-              _guardarAutoDebounce(widget.widget);
-            },
-            label: 'Peso Total Real (Balanza)',
-            valorInicial: widget.widget.peso_total_contraste.toString(),
-            isNumeric: true,
-            isRequired: true,
-          ),
-          CheckboxSimple(
-            label: 'Conformidad',
-            name: 'conformidad',
-            valorInicial: widget.widget.conformidad,
-            onChanged: (value) {
-              _guardarAuto(widget.widget);
-            },
-          ),
-          CustomInputField(
-            name: 'observaciones',
-            onChanged: (value) {
-              _guardarAutoDebounce(widget.widget);
-            },
-            label: 'Observaciones',
-            valorInicial: widget.widget.observaciones,
-            isNumeric: false,
-            isRequired: false,
-          ),
-        ]));
+   return SingleChildScrollView(
+  child: FormBuilder(
+    key: widget._formKey,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 15),
+        CustomInputFieldMM(
+          name: 'hora',
+          label: 'Hora',
+          valorInicial: widget.widget.hora,
+        ),
+        const SizedBox(height: 10),
+        
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final double columnWidth = (constraints.maxWidth - 24) / 3; // Etiqueta + 2 columnas
+
+            return Column(
+              children: [
+                // Fila 1: Cavidades
+                Row(
+                  children: [
+                    SizedBox(
+                      width: columnWidth,
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Text(
+                          'Cavidad',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    for (int i = 0; i < 2; i++)
+                      SizedBox(
+                        width: columnWidth,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: CustomInputFieldMM(
+                            name: 'cavidad_$i',
+                            label: '',
+                            valorInicial:
+                                widget.widget.cavidad[i].toString(),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                // Fila 2: Zsup
+                Row(
+                  children: [
+                    SizedBox(
+                      width: columnWidth,
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Text(
+                          'Zsup',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    for (int i = 0; i < 2; i++)
+                      SizedBox(
+                        width: columnWidth,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: CustomInputField(
+                            name: 'Zsup_$i',
+                            label: '',
+                            isNumeric: true,
+                            isRequired: true,
+                            valorInicial: widget.widget.Zsup[i] == 0
+                                ? ''
+                                : widget.widget.Zsup[i].toString(),
+                            onChanged: (v) => _guardarAutoDebounce(widget.widget),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                // Fila 3: Zmed
+                Row(
+                  children: [
+                    SizedBox(
+                      width: columnWidth,
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Text(
+                          'Zmed',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    for (int i = 0; i < 2; i++)
+                      SizedBox(
+                        width: columnWidth,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: CustomInputField(
+                            name: 'Zmed_$i',
+                            label: '',
+                            isNumeric: true,
+                            isRequired: true,
+                            valorInicial: widget.widget.Zmed[i] == 0
+                                ? ''
+                                : widget.widget.Zmed[i].toString(),
+                            onChanged: (v) => _guardarAutoDebounce(widget.widget),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                // Fila 4: Zinf
+                Row(
+                  children: [
+                    SizedBox(
+                      width: columnWidth,
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Text(
+                          'Zinf',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    for (int i = 0; i < 2; i++)
+                      SizedBox(
+                        width: columnWidth,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: CustomInputField(
+                            name: 'Zinf_$i',
+                            label: '',
+                            isNumeric: true,
+                            isRequired: true,
+                            valorInicial: widget.widget.Zinf[i] == 0
+                                ? ''
+                                : widget.widget.Zinf[i].toString(),
+                            onChanged: (v) => _guardarAutoDebounce(widget.widget),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    ),
+  ),
+);
   }
 }

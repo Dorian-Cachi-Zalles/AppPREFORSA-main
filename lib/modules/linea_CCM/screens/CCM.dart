@@ -4,7 +4,7 @@ import 'package:control_de_calidad/core/widgets/settings_page.dart';
 import 'package:control_de_calidad/modules/linea_CCM/screens/screen_ctrl_MPccm.dart';
 import 'package:control_de_calidad/modules/linea_CCM/screens/screen_ctrl_pesosccm.dart';
 import 'package:control_de_calidad/modules/linea_CCM/screens/screen_datosinicialesccm.dart';
-import 'package:control_de_calidad/modules/linea_CCM/screens/screen_defectos2Colora.dart';
+import 'package:control_de_calidad/modules/linea_CCM/screens/screen_defectos2CCM.dart';
 import 'package:control_de_calidad/modules/linea_CCM/screens/screen_defectosccm.dart';
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
 import 'package:flutter/material.dart';

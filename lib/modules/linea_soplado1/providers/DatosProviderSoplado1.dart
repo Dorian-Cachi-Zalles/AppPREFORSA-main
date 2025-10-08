@@ -2,9 +2,9 @@ import 'package:control_de_calidad/core/constants/Configuraciones.dart';
 import 'package:control_de_calidad/modules/auth/providers/Providerids.dart';
 import 'package:control_de_calidad/core/services/API_service.dart';
 import 'package:control_de_calidad/core/services/SQLlite_service.dart';
-import 'package:control_de_calidad/modules/linea_I6/models/DatosIniciales.dart';
 import 'package:control_de_calidad/modules/linea_I6/models/Defectos.dart';
 import 'package:control_de_calidad/modules/linea_I6/models/Observados.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/models/DatosInicialesSoplado1.dart';
 import 'package:control_de_calidad/modules/linea_soplado1/models/ExtenSoplado.dart';
 import 'package:control_de_calidad/modules/linea_soplado1/models/cc_materia_prima_soplado.dart';
 import 'package:control_de_calidad/modules/linea_soplado1/models/cc_peso_soplado.dart';
@@ -15,15 +15,15 @@ import 'package:sqflite/sqflite.dart';
 class ProviderSoplado1 with ChangeNotifier {
   late Database _db;
   final RepoDatosPrincipales =
-      GenericRepositoryDatosList<ModeloDatosPrincipalesI6>(
+      GenericRepositoryDatosList<ModeloDatosPrincipalesSoplado1>(
     tableName: 'tablaDatosPrincipales',
-    fromMap: (map) => ModeloDatosPrincipalesI6.fromMap(map),
+    fromMap: (map) => ModeloDatosPrincipalesSoplado1.fromMap(map),
     toMap: (d) => d.toMap(),
     copyWithId: (d, id) => d.copyWith(id: id),
   );
-  final RepoMateriaPrima = GenericRepositoryDatosList<Modelo_MP_soplado>(
+  final RepoMateriaPrima = GenericRepositoryDatosList<Modelo_mp_soplado>(
     tableName: 'tablaMateriaPrima',
-    fromMap: (map) => Modelo_MP_soplado.fromMap(map),
+    fromMap: (map) => Modelo_mp_soplado.fromMap(map),
     toMap: (d) => d.toMap(),
     copyWithId: (d, id) => d.copyWith(id: id),
   );
@@ -83,7 +83,7 @@ class ProviderSoplado1 with ChangeNotifier {
   Future<void> _initDatabase() async {
     _db = await openDatabase(
       p.join(await getDatabasesPath(), 'tablalineaSoplado1.db'),
-      version: 1,
+      version: 2,
       onCreate: (db, version) => createTable(db),
     );
     await _loadData();
@@ -114,14 +114,13 @@ class ProviderSoplado1 with ChangeNotifier {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         hasErrors INTEGER NOT NULL,
         hasSend INTEGER NOT NULL,
-        cod_dpcalidad INTEGER NOT NULL,
-        materiaPrima TEXT NOT NULL,       
-        dosificacion REAL NOT NULL,
-        cod_resina INTEGER NOT NULL,
-        humedad REAL NOT NULL,
-        conformidad INTEGER NOT NULL,
-        Observaciones TEXT,
-        isConcatenado INTEGER NOT NULL
+        cod_dpcalidad INTEGER NOT NULL,          
+        cod_materia_prima INTEGER NOT NULL,
+        lote TEXT NOT NULL,
+        tonalidad TEXT NOT NULL,
+        observaciones TEXT NOT NULL,
+        isConcatenado INTEGER NOT NULL,
+        conformidad INTEGER NOT NULL
       )
     ''');
 
@@ -131,12 +130,9 @@ class ProviderSoplado1 with ChangeNotifier {
         hasErrors INTEGER NOT NULL,
         hasSend INTEGER NOT NULL,
         cod_dpcalidad INTEGER NOT NULL,
-        colorante TEXT NOT NULL,
-        codigo TEXT NOT NULL,
-        kl TEXT NOT NULL,
-        bp TEXT NOT NULL,
-        dosificacion REAL NOT NULL,
-        cantidadBolsone INTEGER NOT NULL
+        scrapPreformaspzas INTEGER NOT NULL,
+        scrapBotellasReventadaspzas INTEGER NOT NULL,
+        scrapBotellasMalaspzas INTEGER NOT NULL
       )
     ''');
 
@@ -166,11 +162,11 @@ class ProviderSoplado1 with ChangeNotifier {
         cod_dpcalidad INTEGER NOT NULL,
         hora TEXT NOT NULL,
         cod_producto INTEGER NOT NULL,
-        peso_total_contraste REAL NOT NULL,
-        conformidad INTEGER NOT NULL,
-        observaciones TEXT,
-        isConcatenado INTEGER NOT NULL,
-        pa TEXT
+        cavidad TEXT NOT NULL,
+        Zsup TEXT NOT NULL,
+        Zmed TEXT NOT NULL,
+        Zinf TEXT NOT NULL,
+        isConcatenado INTEGER NOT NULL
           )
     ''');   
 
@@ -217,19 +213,19 @@ class ProviderSoplado1 with ChangeNotifier {
   }
 
   Future<void> addDatosPrincipales() async {
-    final ModeloDatosPrincipalesI6 nuevoDato =
-        ModeloDatosPrincipalesI6.fromMap(defaultValuesDatosIniciales);
+    final ModeloDatosPrincipalesSoplado1 nuevoDato =
+        ModeloDatosPrincipalesSoplado1.fromMap(defaultValuesDatosIniciales);
     await RepoDatosPrincipales.add(_db, nuevoDato);
     notifyListeners();
   }
 
-  Future<void> addMateriaPrima(Modelo_MP_soplado nuevoDato) async {
+  Future<void> addMateriaPrima(Modelo_mp_soplado nuevoDato) async {
     await RepoMateriaPrima.add(_db, nuevoDato);
     notifyListeners();
   }
 
-  Future<void> addColorante(ModeloExtenSoplado nuevoDato) async {
-    await RepoExteSoplado.add(_db, nuevoDato);
+  Future<void> addExtendido(ModeloExtenSoplado nuevoDato) async {
+    await RepoExteSoplado.addLimitada(_db, nuevoDato,1);
     notifyListeners();
   }
 
@@ -250,18 +246,18 @@ class ProviderSoplado1 with ChangeNotifier {
   } 
 
   Future<void> updateDatosPrincipales(
-      int id, ModeloDatosPrincipalesI6 updatedDato) async {
+      int id, ModeloDatosPrincipalesSoplado1 updatedDato) async {
     await RepoDatosPrincipales.update(_db, id, updatedDato);
     notifyListeners();
   }
 
   Future<void> updateMateriaPrima(
-      int id, Modelo_MP_soplado updatedDato) async {
+      int id, Modelo_mp_soplado updatedDato) async {
     await RepoMateriaPrima.update(_db, id, updatedDato);
     notifyListeners();
   }
 
-  Future<void> updateColorante(int id, ModeloExtenSoplado updatedDato) async {
+  Future<void> updateExtendido(int id, ModeloExtenSoplado updatedDato) async {
     await RepoExteSoplado.update(_db, id, updatedDato);
     notifyListeners();
   }
@@ -295,7 +291,7 @@ class ProviderSoplado1 with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> removeColorante(
+  Future<void> removeExtendido(
       int id, void Function(VoidCallback onUndo) showUndoSnackBar) async {
     await RepoExteSoplado.remove(
         _db, id, showUndoSnackBar, () => notifyListeners());
@@ -354,7 +350,7 @@ class ProviderSoplado1 with ChangeNotifier {
   Future<bool> ActualizarDatosPrincipales(IdsProvider idsProvider) async {
     return await ApiService.actualizarDatosiniciales(
       idsProvider: idsProvider,
-      numeroLinea: 1,
+      numeroLinea: 5,
       lista: RepoDatosPrincipales.items,
       toJsonAPI: (d) => (d).toJsonAPI(),
       endpoint: Config().getEndpoint(1, 1),
@@ -405,7 +401,7 @@ class ProviderSoplado1 with ChangeNotifier {
     print("   maquina: I6");
   }
 
-  Future<bool> enviarDatosAPIColorante(int id) async {
+  Future<bool> enviarDatosAPIExtendido(int id) async {
     return await ApiService.enviarDatosBool(
       id: id,
       lista: RepoExteSoplado.items,
@@ -419,7 +415,7 @@ class ProviderSoplado1 with ChangeNotifier {
       id: id,
       lista: RepoMateriaPrima.items,
       toJsonAPI: (d) => (d).toJsonAPI(),
-      endpoint: Config().getEndpoint(1, 3),
+      endpoint: Config().getEndpoint(5, 1),
     );
   }
 

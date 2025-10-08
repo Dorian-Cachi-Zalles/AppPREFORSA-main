@@ -3,7 +3,7 @@ class ModeloExtenSoplado {
   final int? id;
   final bool hasErrors;
   final bool hasSend;
-  final int idregistro;
+  final int cod_dpcalidad;
   final int scrapPreformaspzas;
   final int scrapBotellasReventadaspzas;
   final int scrapBotellasMalaspzas;
@@ -12,7 +12,7 @@ class ModeloExtenSoplado {
     this.id,
     required this.hasErrors,
     required this.hasSend,
-    required this.idregistro,
+    required this.cod_dpcalidad,
     required this.scrapPreformaspzas,
     required this.scrapBotellasReventadaspzas,
     required this.scrapBotellasMalaspzas
@@ -23,7 +23,7 @@ class ModeloExtenSoplado {
       id: map['id'] as int?,
       hasErrors: map['hasErrors'] == 1,
       hasSend: map['hasSend'] == 1,
-      idregistro: map['idregistro'] as int,
+      cod_dpcalidad: map['cod_dpcalidad'] as int,
       scrapPreformaspzas: map['scrapPreformaspzas'] as int,
       scrapBotellasReventadaspzas: map['scrapBotellasReventadaspzas'] as int,
       scrapBotellasMalaspzas: map['scrapBotellasMalaspzas'] as int
@@ -35,7 +35,7 @@ class ModeloExtenSoplado {
       id: id,
       hasErrors: hasErrors ?? this.hasErrors,
       hasSend: hasSend ?? this.hasSend,
-      idregistro: idregistro,
+      cod_dpcalidad: cod_dpcalidad,
       scrapPreformaspzas: _toInt(formValues['scrapPreformaspzas']),
     scrapBotellasReventadaspzas: _toInt(formValues['scrapBotellasReventadaspzas']),
     scrapBotellasMalaspzas: _toInt(formValues['scrapBotellasMalaspzas'])
@@ -51,7 +51,7 @@ class ModeloExtenSoplado {
       if (id != null) 'id': id,
       'hasErrors': hasErrors ? 1 : 0,
       'hasSend': hasSend ? 1 : 0,
-      'idregistro': idregistro,
+      'cod_dpcalidad': cod_dpcalidad,
       'scrapPreformaspzas': scrapPreformaspzas,
       'scrapBotellasReventadaspzas': scrapBotellasReventadaspzas,
       'scrapBotellasMalaspzas': scrapBotellasMalaspzas
@@ -62,14 +62,14 @@ class ModeloExtenSoplado {
     int? id,
     bool? hasErrors,
     bool? hasSend,
-    int? idregistro,
+    int? cod_dpcalidad,
     int? scrapPreformaspzas, int? scrapBotellasReventadaspzas, int? scrapBotellasMalaspzas
   }) {
     return ModeloExtenSoplado(
       id: id ?? this.id,
       hasErrors: hasErrors ?? this.hasErrors,
       hasSend: hasSend ?? this.hasSend,
-      idregistro: idregistro ?? this.idregistro,
+      cod_dpcalidad: cod_dpcalidad ?? this.cod_dpcalidad,
       scrapPreformaspzas: scrapPreformaspzas ?? this.scrapPreformaspzas,
       scrapBotellasReventadaspzas: scrapBotellasReventadaspzas ?? this.scrapBotellasReventadaspzas,
       scrapBotellasMalaspzas: scrapBotellasMalaspzas ?? this.scrapBotellasMalaspzas
@@ -81,7 +81,7 @@ class ModeloExtenSoplado {
 extension ModeloExtenSopladoApi on ModeloExtenSoplado {
   Map<String, dynamic> toJsonAPI() {
     return {
-      "ID_regis": idregistro,
+      "cod_dpcalidad": cod_dpcalidad,
       "scrapPreformaspzas": scrapPreformaspzas,
       "scrapBotellasReventadaspzas": scrapBotellasReventadaspzas,
       "scrapBotellasMalaspzas": scrapBotellasMalaspzas

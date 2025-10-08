@@ -28,7 +28,7 @@ class ScreenListDatosPESOSIPS extends StatelessWidget {
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
@@ -123,6 +123,7 @@ class ScreenListDatosPESOSIPS extends StatelessWidget {
                             },
                             expandedContent: generateExpandableContent([
                               ['Conformidad ', 5, dtdatospesosips.conformidad],
+                              ['Peso Total Balanza ', 1, dtdatospesosips.peso_total_contraste.toString()],
                               [
                                 'Observaciones ',
                                 1,
@@ -266,7 +267,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
@@ -400,9 +401,9 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
                                   bodyPost: buildBodyPost2(_datos.cod_producto),
                                   camposMostrar: CamposMostrar,
                                   transformador: (item) {
-                                    final v1 = toNum(item["peso_embalaje"]);
+                                   final v1 = toNum(item["peso_embalaje"]);
                                     final v2 = toNum(item["peso_neto"]);
-                                    final total = v1 + v2;
+                                    final total = v1 + v2; 
                                     final pa = item["pa"].toString();
                                     final Producto =
                                         "${item["color"] ?? ""} ${item["gramo"] ?? ""}"
@@ -448,7 +449,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
               BotonDeslizableGenerico<ProviderI6, ModeloPesos>(
                 obtenerHasError: (provider, id) {
                   final item =
-                      provider.RepoPesos.items.firstWhere((e) => e.id == id);
+                      provider.RepoPesos.items.firstWhere((e) => e.id == id);                  
                   return item.hasErrors;
                 },
                 colorcito: Config.colores[1]!,
@@ -468,12 +469,11 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
   ModeloPesos obtenerDatosActualizados({bool hasSend = false}) {
     _formKey.currentState?.save();
     final values = _formKey.currentState!.value;
-
     final hasErrors =
         _formKey.currentState?.fields.values.any((field) => field.hasError) ??
             false;
 
-    return widget.datosPESOSIPS.copyWithForm(
+    return _datos.copyWithForm(
       values,
       hasSend: hasSend,
       hasErrors: hasErrors,

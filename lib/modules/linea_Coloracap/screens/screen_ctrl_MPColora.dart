@@ -35,28 +35,22 @@ class _ScreenListDatosMPColoraState extends State<ScreenListDatosMPColora> {
       "orderDir": "desc",
       "lookups": [
         {
-          "tabla": "resina",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "marca",
+          "campoPrimario": "cod_tapa",
+          "campoMostrar": "color",
         },
         {
-          "tabla": "resina",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "file",
+          "campoPrimario": "cod_tapa",
+          "campoMostrar": "gramo",
         },
         {
-          "tabla": "resina",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "codigo",
-        },
-        {
-          "tabla": "resina",
-          "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "peso_bolsa",
+          "campoPrimario": "cod_tapa",
+          "campoMostrar": "molde",
         },
         {
           "tabla": "prd_parte_resumen",
@@ -68,11 +62,9 @@ class _ScreenListDatosMPColoraState extends State<ScreenListDatosMPColora> {
     };
     const Map<String, String> CamposMostrar = {
       "Parte": "Parte",
-      "marca": "Materia Prima",
-      "file": "File",
-      "peso_bolsa": "Peso",
-      "cant_bolsones": "Cantidad de Bolsones",
-      "bolsones": "Bolsones Utilizados"
+      "Producto": "Producto",
+      "cant_bolsones":"Cant. Tapas Utilizadas",
+      "bolsones":"Etiquetas de las Cajas",
     };
     // 🔹 Cuando tengas el idSeleccionado, lo combinas:
 
@@ -142,7 +134,7 @@ class _ScreenListDatosMPColoraState extends State<ScreenListDatosMPColora> {
                                 dtdatosmpips.conformidad ? ' SI' : ' NO',
                           },
                           expandedContent: generateExpandableContent([                           
-                            ['Observaciones ', 1, dtdatosmpips.observaciones],
+                            ['Observaciones ', 1, dtdatosmpips.observaciones.toString()],
                           ]),
                           hasErrors: dtdatosmpips.hasErrors,
                           hasSend: dtdatosmpips.hasSend,
@@ -279,28 +271,22 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
       "orderDir": "desc",
       "lookups": [
         {
-          "tabla": "resina",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "marca",
+          "campoPrimario": "cod_tapa",
+          "campoMostrar": "color",
         },
         {
-          "tabla": "resina",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "file",
+          "campoPrimario": "cod_tapa",
+          "campoMostrar": "gramo",
         },
         {
-          "tabla": "resina",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "codigo",
-        },
-        {
-          "tabla": "resina",
-          "campoForanea": "cod_materia_prima",
-          "campoPrimario": "cod_resina",
-          "campoMostrar": "peso_bolsa",
+          "campoPrimario": "cod_tapa",
+          "campoMostrar": "molde",
         },
         {
           "tabla": "prd_parte_resumen",
@@ -312,18 +298,16 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
     };
     const Map<String, String> CamposMostrar = {
       "Parte": "Parte",
-      "marca": "Materia Prima",
-      "file": "File",
-      "peso_bolsa": "Peso",
-      "cant_bolsones": "Cantidad de Bolsones",
-      "bolsones": "Bolsones Utilizados"
+      "Producto": "Producto",
+      "cant_bolsones":"Cant. Tapas Utilizadas",
+      "bolsones":"Etiquetas de las Cajas",
     };
     // 🔹 Cuando tengas el idSeleccionado, lo combinas:
     Map<String, dynamic> buildBodyPost1() {
       return {
         ...bodyPostBase, // 🔹 copia lo constante
         "filters": {
-          "linea": "INY"
+          "linea": "IMP"
           //"fecha_parte__lastweek": true
         },
       };
@@ -368,12 +352,16 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
                               multiple: false,
                               campoId: "cod_det_mp",
                               camposMostrar: CamposMostrar,
-                              camposImpo: const ['marca', 'file'],
+                              camposImpo: const ['color','gramo','molde'],
                               transformador: (item) {
                                 final Parte = item["nro_parte"].toString();
+                                final Producto =
+                                            "${item["color"] ?? ""} ${item["gramo"] ?? ""} ${item["molde"] ?? ""}"
+                                                .trim();
                                 return {
                                   ...item, // 👈 mantiene todos los originales
                                   "Parte": Parte,
+                                  "Producto": Producto,
                                 };
                               },
                               titulo: const Expanded(
@@ -382,7 +370,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
                               onPress: (idSeleccionado, idsSeleccionados,
                                   camposImpoSeleccionados) {
                                 final String MP =
-                                    '${camposImpoSeleccionados['marca']}';
+                                    '${camposImpoSeleccionados['color']} ${camposImpoSeleccionados['gramo']} ${camposImpoSeleccionados['molde']}';
                                 final actualizarEstado = _datosMpIps.copyWith(
                                     isConcatenado: true,
                                     cod_resina: idSeleccionado,
@@ -427,9 +415,13 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
                                 titulo: "Resina seleccionada",
                                 transformador: (item) {
                                   final Parte = item["nro_parte"].toString();
+                                  final Producto =
+                                            "${item["color"] ?? ""} ${item["gramo"] ?? ""} ${item["molde"] ?? ""}"
+                                                .trim();
                                   return {
                                     ...item, // 👈 mantiene todos los originales
                                     "Parte": Parte,
+                                    "Producto":Producto
                                   };
                                 },
                                 onPress: () {

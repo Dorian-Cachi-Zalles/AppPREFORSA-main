@@ -10,8 +10,8 @@ import 'package:control_de_calidad/core/widgets/textsimpleform.dart';
 import 'package:control_de_calidad/core/widgets/titulos.dart';
 import 'package:control_de_calidad/core/widgets/ventanaflotanteAPI.dart';
 import 'package:control_de_calidad/modules/ControlObservados/screens/GenericoSelector%20copy.dart';
+import 'package:control_de_calidad/modules/linea_CCM/providers/DatosProviderCCM.dart';
 import 'package:control_de_calidad/modules/linea_I6/models/Peso.dart';
-import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
@@ -22,27 +22,34 @@ class ScreenListDatosPESOSCCM extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProviderI6>(context, listen: false);
+    final provider = Provider.of<ProviderCCM>(context, listen: false);
     final providerregistro = Provider.of<IdsProvider>(context, listen: false);
     final String url = "${Config().baseUrl}/ObtenerValores";
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa",
           "campoMostrar": "color",
         },
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa",
           "campoMostrar": "gramo"
-        }
+        },
+        {
+          "tabla": "prd_tapa",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_tapa",
+          "campoMostrar": "molde"
+        },
+
       ]
     };
     const Map<String, String> CamposMostrar = {
@@ -74,7 +81,7 @@ class ScreenListDatosPESOSCCM extends StatelessWidget {
                     titulo: 'REGISTROS DE PESOS',
                     tipo: 0,
                   ),
-                  Consumer<ProviderI6>(
+                  Consumer<ProviderCCM>(
                     builder: (context, provider, _) {
                       final datosPESOSIPS = provider.RepoPesos.items;
 
@@ -186,7 +193,7 @@ class ScreenListDatosPESOSCCM extends StatelessWidget {
       bottomNavigationBar: BotonAgregar(
         colorcito: Config.colores[4]!,
         onPressed: () async {
-          int? idregistro = await providerregistro.getNumeroById(1);
+          int? idregistro = await providerregistro.getNumeroById(4);
 
           if (idregistro == null || idregistro == 0) {
             return; // Detiene la ejecución si el idregistro es 0 o null
@@ -261,26 +268,32 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
 
   @override
   Widget build(BuildContext context) {
-    final providerI6 = Provider.of<ProviderI6>(context, listen: false);
+    final providerCCMProviderCCM = Provider.of<ProviderCCM>(context, listen: false);
     final String url = "${Config().baseUrl}/ObtenerValores";
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
-      "lookups": [
+       "lookups": [
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa",
           "campoMostrar": "color",
         },
         {
-          "tabla": "preforma",
+          "tabla": "prd_tapa",
           "campoForanea": "cod_preforma",
-          "campoPrimario": "cod_preforma",
+          "campoPrimario": "cod_tapa",
           "campoMostrar": "gramo"
-        }
+        },
+        {
+          "tabla": "prd_tapa",
+          "campoForanea": "cod_preforma",
+          "campoPrimario": "cod_tapa",
+          "campoMostrar": "molde"
+        },
       ]
     };
     const Map<String, String> CamposMostrarInicial = {
@@ -304,8 +317,8 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
       return {
         ...bodyPostBase, // 🔹 copia lo constante
         "filters": {
-          "linea": "INY",
-          "maquina": "I6"
+          "linea": "TAP",
+          "maquina": "C1"
           //"fecha_parte__lastweek": true
         },
       };
@@ -363,7 +376,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
                                       isConcatenado: true,
                                       cod_producto: idSeleccionado,
                                       pa: paa);
-                                  providerI6.updatePesos(
+                                  providerCCMProviderCCM.updatePesos(
                                       _datos.id!, actualizarEstado);
                                   // 🔹 Aquí actualizas el cod_parte en el Provider
                                   setState(() {
@@ -405,9 +418,8 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
                                     final total = v1 + v2;
                                     final pa = item["pa"].toString();
                                     final Producto =
-                                        "${item["color"] ?? ""} ${item["gramo"] ?? ""}"
+                                        "${item["color"] ?? ""} ${item["gramo"] ?? ""} ${item["molde"] ?? ""}"
                                             .trim();
-
                                     return {
                                       ...item, // 👈 mantiene todos los originales
                                       "total": total,
@@ -421,7 +433,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
                                       isConcatenado: false,
                                       cod_producto: 0,
                                     );
-                                    providerI6.updatePesos(
+                                    providerCCMProviderCCM.updatePesos(
                                         _datos.id!, actualizarEstado);
                                     provider.mostrarFalse();
                                     Navigator.pop(dialogContext);
@@ -445,7 +457,7 @@ class EditDatosPESOSIPSFormState extends State<EditDatosPESOSIPSForm> {
                   ),
                 ),
               ),
-              BotonDeslizableGenerico<ProviderI6, ModeloPesos>(
+              BotonDeslizableGenerico<ProviderCCM, ModeloPesos>(
                 obtenerHasError: (provider, id) {
                   final item =
                       provider.RepoPesos.items.firstWhere((e) => e.id == id);
@@ -509,7 +521,7 @@ class _FormularioGeneralDatosPESOSIPSState
             false;
         final values = formState.value;
         final updatedDatos = datos.copyWithForm(values, hasErrors: hasErrors);
-        final provider = context.read<ProviderI6>();
+        final provider = context.read<ProviderCCM>();
         provider.updatePesos(datos.id!, updatedDatos);
       }
     }

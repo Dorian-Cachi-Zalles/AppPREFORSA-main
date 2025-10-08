@@ -464,7 +464,7 @@ class _EditDatosMPIPSFormState extends State<EditDatosMPIPSForm> {
       return {
         ...bodyPostBase, // 🔹 copia lo constante
         "filters": {
-          "linea": "INY"
+          "linea": "INY",         
           //"fecha_parte__lastweek": true
         },
       };

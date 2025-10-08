@@ -3,6 +3,7 @@ class ModeloDatosCcmDef2 {
   final int? id;
   final bool hasErrors;
   final bool hasSend;
+  final String hora;
   final int cod_dpcalidad;
   final int MaxDistrColor;
   final int PtsNegroPeq;
@@ -20,6 +21,7 @@ class ModeloDatosCcmDef2 {
     this.id,
     required this.hasErrors,
     required this.hasSend,
+    required this.hora,
     required this.cod_dpcalidad,
     required this.MaxDistrColor,
     required this.PtsNegroPeq,
@@ -39,6 +41,7 @@ class ModeloDatosCcmDef2 {
       id: map['id'] as int?,
       hasErrors: map['hasErrors'] == 1,
       hasSend: map['hasSend'] == 1,
+       hora: map['hora'] as String,
       cod_dpcalidad: map['cod_dpcalidad'] as int,
       MaxDistrColor: map['MaxDistrColor'] as int,
       PtsNegroPeq: map['PtsNegroPeq'] as int,
@@ -60,6 +63,7 @@ class ModeloDatosCcmDef2 {
       hasErrors: hasErrors ?? this.hasErrors,
       hasSend: hasSend ?? this.hasSend,
       cod_dpcalidad: cod_dpcalidad,
+       hora: _toString(formValues['hora']),
       MaxDistrColor: _toInt(formValues['MaxDistrColor']),
     PtsNegroPeq: _toInt(formValues['PtsNegroPeq']),
     PtsNegroMed: _toInt(formValues['PtsNegroMed']),
@@ -78,7 +82,7 @@ class ModeloDatosCcmDef2 {
     if (v is String) return int.tryParse(v) ?? 0;
     return 0;
   }
- 
+  static String _toString(dynamic v) => v?.toString() ?? ''; 
 
 
   Map<String, dynamic> toMap() {
@@ -87,6 +91,7 @@ class ModeloDatosCcmDef2 {
       'hasErrors': hasErrors ? 1 : 0,
       'hasSend': hasSend ? 1 : 0,
       'cod_dpcalidad': cod_dpcalidad,
+      'hora': hora,
       'MaxDistrColor': MaxDistrColor,
       'PtsNegroPeq': PtsNegroPeq,
       'PtsNegroMed': PtsNegroMed,
@@ -106,6 +111,7 @@ class ModeloDatosCcmDef2 {
     bool? hasErrors,
     bool? hasSend,
     int? cod_dpcalidad,
+    String? hora,
     int? MaxDistrColor, int? PtsNegroPeq, int? PtsNegroMed, int? Puntuacion_0, int? Puntuacion_1, int? Excentricidad, int? DistIntMax, int? DistExtMax, int? Puntuacion_2, int? Puntuacion_3, int? AmplBandaBrill
   }) {
     return ModeloDatosCcmDef2(
@@ -113,6 +119,7 @@ class ModeloDatosCcmDef2 {
       hasErrors: hasErrors ?? this.hasErrors,
       hasSend: hasSend ?? this.hasSend,
       cod_dpcalidad: cod_dpcalidad ?? this.cod_dpcalidad,
+       hora: hora ?? this.hora,
       MaxDistrColor: MaxDistrColor ?? this.MaxDistrColor,
       PtsNegroPeq: PtsNegroPeq ?? this.PtsNegroPeq,
       PtsNegroMed: PtsNegroMed ?? this.PtsNegroMed,
@@ -133,6 +140,7 @@ extension ModeloDatosCcmDef2Api on ModeloDatosCcmDef2 {
   Map<String, dynamic> toJsonAPI() {
     return {
       "cod_dpcalidad": cod_dpcalidad,
+       "hora": hora,
       "MaxDistrColor": MaxDistrColor,
       "PtsNegroPeq": PtsNegroPeq,
       "PtsNegroMed": PtsNegroMed,

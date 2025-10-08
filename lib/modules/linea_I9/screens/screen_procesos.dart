@@ -25,7 +25,7 @@ class ScreenListDatosPROCEI9 extends StatelessWidget {
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {
@@ -278,7 +278,7 @@ class _EditDatosPROCEIPSFormState extends State<EditDatosPROCEIPSForm> {
     const Map<String, dynamic> bodyPostBase = {
       "table": "producto_terminado",
       "limit": 20,
-      "orderBy": "fecha_prod",
+      "orderBy": "cod_producto",
       "orderDir": "desc",
       "lookups": [
         {

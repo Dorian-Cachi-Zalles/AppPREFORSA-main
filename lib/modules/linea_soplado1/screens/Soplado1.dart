@@ -2,12 +2,10 @@ import 'package:control_de_calidad/core/widgets/custom_drawer.dart';
 import 'package:control_de_calidad/core/constants/catalogodropdowns.dart';
 import 'package:control_de_calidad/core/widgets/settings_page.dart';
 import 'package:control_de_calidad/modules/linea_I6/providers/DatosProviderPrefI6.dart';
-import 'package:control_de_calidad/modules/linea_I6/screens/screen_ctrl_MP.dart';
-import 'package:control_de_calidad/modules/linea_I6/screens/screen_ctrl_pesos.dart';
-import 'package:control_de_calidad/modules/linea_I6/screens/screen_datosiniciales.dart';
-import 'package:control_de_calidad/modules/linea_I6/screens/screen_defectos.dart';
-import 'package:control_de_calidad/modules/linea_I6/screens/screen_procesos.dart';
-import 'package:control_de_calidad/modules/linea_I6/screens/screen_temperaturas.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/screens/screen_ctrl_MP_VJ1.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/screens/screen_ctrl_pesos_vJ1.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/screens/screen_datosiniciales_VJ1.dart';
+import 'package:control_de_calidad/modules/linea_soplado1/screens/screen_defectos_VJ1.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
@@ -26,12 +24,11 @@ class _ScreenPreformasSoplado1State extends State<ScreenPreformasSoplado1> {
 
   List<Widget> _buildScreens() {
     return [
-      ScreenDatosprincipalesi6(),
-      ScreenListDatosMPIPS(),
-      ScreenListDatosDEFIPS(),
-      ScreenListDatosPESOSIPS(),
-      ScreenListDatosPROCEIPS(),
-      ScreenListDatosTEMPIPS(),
+      ScreenDatosprincipales_VJ1(),
+      ScreenListDatosMP_Soplado(),
+      ScreenListDatosDEF_VJ1(),
+      ScreenListDatosPESOS_VJ1(),     
+      
     ];
   }
 
@@ -79,7 +76,7 @@ class _ScreenPreformasSoplado1State extends State<ScreenPreformasSoplado1> {
         providers: [
           ChangeNotifierProvider(create: (_) => ProviderI6()),
           ChangeNotifierProvider(
-              create: (_) => EditProviderDatosDEFIPS(
+              create: (_) => EditProviderDatosDEFVJ1(
                   mostrarInicial1: false,
                   mostrarInicial2: false,
                   variablesIniciales: [],
@@ -95,7 +92,7 @@ class _ScreenPreformasSoplado1State extends State<ScreenPreformasSoplado1> {
               flexibleSpace: Stack(
                 children: [
                   const Image(
-                    image: AssetImage('images/PREFIPS.png'),
+                    image: AssetImage('images/baner_soplado_kream.png'),
                     height: 150,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -106,7 +103,7 @@ class _ScreenPreformasSoplado1State extends State<ScreenPreformasSoplado1> {
                       children: [
                         const SizedBox(height: 45),
                         Text(
-                          "Inyección de Preformas I6",
+                          "Soplado de Botellas VJ1",
                           style: GoogleFonts.quicksand(
                             color: settingsModel.isDarkMode
                                 ? Colors.white
@@ -149,7 +146,7 @@ class _ScreenPreformasSoplado1State extends State<ScreenPreformasSoplado1> {
             ),
           ),
           drawer: const CustomDrawer(
-            lineaActual: 'I6',
+            lineaActual: 'Soplado VJ1',
             MostrarInicio: true,
           ),
           body: PersistentTabView(
